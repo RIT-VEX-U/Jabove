@@ -22,6 +22,12 @@ extern vex::motor_group right_motors;
 // ================ SUBSYSTEMS ================
 extern OdometryTank odom;
 extern TankDrive drive_sys;
+extern PID drive_pid;
+
+void intake(double volts);
+void intake();
+void outtake(double volts);
+void outtake();
 
 // ================ UTILS ================
 
