@@ -16,6 +16,7 @@ extern vex::inertial imu;
 extern vex::motor_group intake_motors;
 extern vex::motor_group left_motors;
 extern vex::motor_group right_motors;
+extern vex::motor_group climb_motors;
 
 // Pneumatics
 
@@ -28,6 +29,11 @@ void intake(double volts);
 void intake();
 void outtake(double volts);
 void outtake();
+
+void out_climb(double volts);
+void out_climb();
+void climb_up(double volts);
+void climb_up();
 
 // ================ UTILS ================
 

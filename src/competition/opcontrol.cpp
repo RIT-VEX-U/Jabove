@@ -2,11 +2,14 @@
 #include "vex.h"
 #include "robot-config.h"
 
-std::atomic<bool> drive(false);
+std::atomic<bool> drive(true);
 
 // Button definitions
-const vex::controller::button &intake_button = con.ButtonR1;
-const vex::controller::button &outtake_button = con.ButtonR2;
+const vex::controller::button &intake_button = con.ButtonR2;
+const vex::controller::button &outtake_button = con.ButtonR1;
+
+const vex::controller::button &shoot_climb_button = con.ButtonL1;
+const vex::controller::button &climb_up_button = con.ButtonL2;
 
 /**
  * Main entrypoint for the driver control period
@@ -21,6 +24,9 @@ void opcontrol()
     // intake
     intake_button.pressed([]() { intake(); } );
     outtake_button.pressed([]() { outtake(); });
+
+    shoot_climb_button.pressed([]() { out_climb(); } );
+    climb_up_button.pressed([]() { climb_up(); });
 
     con.ButtonDown.pressed([]() {
 
@@ -50,6 +56,10 @@ void opcontrol()
         if (drive) {
             if (!intake_button.pressing() && !outtake_button.pressing()) {
                 intake_motors.stop(vex::brakeType::hold);
+            }
+
+            if (!shoot_climb_button.pressing() && !climb_up_button.pressing()) {
+                climb_motors.stop(vex::brakeType::hold);
             }
 
             double straight = (double)con.Axis3.position() / 100;

@@ -15,6 +15,10 @@ vex::inertial imu(vex::PORT15, vex::turnType::right);
 // Analog sensors
 
 // ================ OUTPUTS ================
+// Climb Motors 
+vex::motor left_climb(vex::PORT8, vex::gearSetting::ratio36_1, true);
+vex::motor right_climb(vex::PORT14, vex::gearSetting::ratio36_1, false);
+
 // Intake Motors
 vex::motor left_intake(vex::PORT1, vex::gearSetting::ratio6_1, true);
 vex::motor right_intake(vex::PORT10, vex::gearSetting::ratio6_1, false);
@@ -34,6 +38,8 @@ vex::motor_group left_motors = {left_front, left_second, left_third, left_back};
 vex::motor_group right_motors = {right_front, right_second, right_third, right_back};
 
 vex::motor_group intake_motors = {left_intake, right_intake};
+
+vex::motor_group climb_motors = {left_climb, right_climb};
 
 // ================ SUBSYSTEMS ================
 PID::pid_config_t drive_pid_cfg {
@@ -86,6 +92,13 @@ void intake() { intake_motors.spin(FWD, intake_volts, vex::volt); };
 
 void outtake(double volts) { intake_motors.spin(REV, volts, vex::volt); };
 void outtake() { intake_motors.spin(REV, intake_volts, vex::volt); };
+
+const double climb_volts = 12.0;
+void out_climb(double volts) { climb_motors.spin(FWD, volts, vex::volt); };
+void out_climb() { climb_motors.spin(FWD, climb_volts, vex::volt); };
+
+void climb_up(double volts) { climb_motors.spin(REV, volts, vex::volt); };
+void climb_up() { climb_motors.spin(REV, climb_volts, vex::volt); };
 
 // ================ UTILS ================
 
