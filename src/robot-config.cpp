@@ -12,6 +12,8 @@ vex::controller con;
 vex::inertial imu(vex::PORT19, vex::turnType::right);
 
 // Analog sensors
+const double intake_sensor_dist_mm = 100;
+vex::distance intake_sensor(vex::PORT3);
 
 // ================ OUTPUTS ================
 // Climb Motors
@@ -50,9 +52,7 @@ CustomEncoder center_enc{Brain.ThreeWirePort.E, 2048};
 vex::digital_out left_wing_sol{Brain.ThreeWirePort.B};
 vex::digital_out right_wing_sol{Brain.ThreeWirePort.G};
 vex::digital_out climb_wing_sol{Brain.ThreeWirePort.A};
-vex::digital_out headlights{Brain.ThreeWirePort.D};
-
-vex::vision vision{vex::PORT8};
+vex::digital_out vision_light{Brain.ThreeWirePort.D};
 
 // ================ SUBSYSTEMS ================
 PID::pid_config_t drive_pid_cfg{

@@ -9,6 +9,8 @@ extern vex::controller con;
 // Digital sensors
 extern vex::inertial imu;
 // Analog sensors
+extern const double intake_sensor_dist_mm;
+extern vex::distance intake_sensor;
 
 // ================ OUTPUTS ================
 // Motors
@@ -21,7 +23,7 @@ extern CustomEncoder center_enc;
 extern vex::digital_out left_wing_sol;
 extern vex::digital_out right_wing_sol;
 extern vex::digital_out climb_wing_sol;
-extern vex::digital_out headlights;
+extern vex::digital_out vision_light;
 
 extern vex::vision vision;
 

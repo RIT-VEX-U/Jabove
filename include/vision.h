@@ -1,5 +1,5 @@
 #include "vex.h"
-extern vex::vision::signature SIG_1;
+extern vex::vision::signature TRIBALL;
 extern vex::vision::signature SIG_2;
 extern vex::vision::signature SIG_3;
 extern vex::vision::signature SIG_4;
