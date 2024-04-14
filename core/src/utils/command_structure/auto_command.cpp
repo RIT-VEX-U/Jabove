@@ -48,7 +48,7 @@ bool InOrder::run() {
   }
   // retrieve and remove command at the front of the queue
   if (current_command == nullptr) {
-    printf("TAKING INORDER: len =  %d\n", cmds.size());
+    printf("TAKING INORDER: len =  %ld\n", cmds.size());
     current_command = cmds.front();
     cmds.pop();
     tmr.reset();
@@ -126,9 +126,9 @@ bool Parallel::run() {
     // not initialized yet
     for (int i = 0; i < cmds.size(); i++) {
       parallel_runner_info *ri = new parallel_runner_info{
-          .index = i,
-          .runners = &runners,
-          .cmd = cmds[i],
+        .index = i,
+        .runners = &runners,
+        .cmd = cmds[i],
       };
       runners.push_back(new vex::task(parallel_runner, ri));
     }

@@ -11,8 +11,8 @@ TankDrive::TankDrive(motor_group &left_motors, motor_group &right_motors, robot_
   turn_default_feedback = config.turn_feedback;
 }
 
-AutoCommand *TankDrive::DriveToPointCmd(Feedback &fb, point_t pt, vex::directionType dir, double max_speed,
-                                        double end_speed) {
+AutoCommand *
+TankDrive::DriveToPointCmd(Feedback &fb, point_t pt, vex::directionType dir, double max_speed, double end_speed) {
   return new DriveToPointCommand(*this, fb, pt, dir, max_speed, end_speed);
 }
 
@@ -24,8 +24,8 @@ AutoCommand *TankDrive::DriveForwardCmd(double dist, vex::directionType dir, dou
   return new DriveForwardCommand(*this, *drive_default_feedback, dist, dir, max_speed, end_speed);
 }
 
-AutoCommand *TankDrive::DriveForwardCmd(Feedback &fb, double dist, vex::directionType dir, double max_speed,
-                                        double end_speed) {
+AutoCommand *
+TankDrive::DriveForwardCmd(Feedback &fb, double dist, vex::directionType dir, double max_speed, double end_speed) {
   return new DriveForwardCommand(*this, fb, dist, dir, max_speed, end_speed);
 }
 
@@ -75,8 +75,9 @@ AutoCommand *TankDrive::TurnDegreesCmd(Feedback &fb, double degrees, double max_
 AutoCommand *TankDrive::PurePursuitCmd(PurePursuit::Path path, directionType dir, double max_speed, double end_speed) {
   return new PurePursuitCommand(*this, *drive_default_feedback, path, dir, max_speed, end_speed);
 }
-AutoCommand *TankDrive::PurePursuitCmd(Feedback &feedback, PurePursuit::Path path, directionType dir, double max_speed,
-                                       double end_speed) {
+AutoCommand *TankDrive::PurePursuitCmd(
+  Feedback &feedback, PurePursuit::Path path, directionType dir, double max_speed, double end_speed
+) {
   return new PurePursuitCommand(*this, feedback, path, dir, max_speed, end_speed);
 }
 
@@ -131,6 +132,7 @@ void TankDrive::stop() {
 }
 
 void TankDrive::drive_tank_raw(double left_norm, double right_norm) {
+  printf("l: %2.2f, r: %2.2f\n", left_norm, right_norm);
   left_motors.spin(directionType::fwd, left_norm * 12, voltageUnits::volt);
   right_motors.spin(directionType::fwd, right_norm * 12, voltageUnits::volt);
 }
@@ -219,8 +221,9 @@ void TankDrive::drive_arcade(double forward_back, double left_right, int power, 
  * @param max_speed  the maximum percentage of robot speed at which the robot will travel. 1 = full power
  * @param end_speed  the movement profile will attempt to reach this velocity by its completion
  */
-bool TankDrive::drive_forward(double inches, directionType dir, Feedback &feedback, double max_speed,
-                              double end_speed) {
+bool TankDrive::drive_forward(
+  double inches, directionType dir, Feedback &feedback, double max_speed, double end_speed
+) {
   static pose_t pos_setpt;
 
   // We can't run the auto drive function without odometry
@@ -354,8 +357,9 @@ bool TankDrive::turn_degrees(double degrees, double max_speed, double end_speed)
  * its completion
  * @return true if we have reached our target point
  */
-bool TankDrive::drive_to_point(double x, double y, vex::directionType dir, Feedback &feedback, double max_speed,
-                               double end_speed) {
+bool TankDrive::drive_to_point(
+  double x, double y, vex::directionType dir, Feedback &feedback, double max_speed, double end_speed
+) {
   // We can't run the auto drive function without odometry
   if (odometry == NULL) {
     fprintf(stderr, "Odometry is NULL. Unable to run drive_forward()\n");
@@ -587,8 +591,9 @@ double TankDrive::modify_inputs(double input, int power) { return sign(input) * 
  * @param max_speed Limit the speed of the robot (for pid / pidff feedbacks)
  * @return True when the path is complete
  */
-bool TankDrive::pure_pursuit(PurePursuit::Path path, directionType dir, Feedback &feedback, double max_speed,
-                             double end_speed) {
+bool TankDrive::pure_pursuit(
+  PurePursuit::Path path, directionType dir, Feedback &feedback, double max_speed, double end_speed
+) {
   std::vector<point_t> points = path.get_points();
   if (!path.is_valid()) {
     printf("WARNING: Unexpected pure pursuit path - some segments intersect or are too close\n");

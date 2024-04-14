@@ -63,8 +63,6 @@ PID::pid_config_t drive_pid_cfg{
   .on_target_time = 0.1,
 };
 
-PID drive_pid{drive_pid_cfg};
-
 PID::pid_config_t drive_correction_pid{
   .p = 0.00,
   .i = 0.0,
@@ -72,62 +70,32 @@ PID::pid_config_t drive_correction_pid{
   .deadband = 0.0,
 };
 
-PID::pid_config_t turn_pid_cfg{
-  .p = 0.001, 
-  .i = 0.0, 
-  .d = 0.0, 
-  .deadband = 0.0, 
-  .on_target_time = 0.0
-};
+PID::pid_config_t turn_pid_cfg{.p = 0.018, .i = 0.0, .d = 0.00115, .deadband = 3.0, .on_target_time = 0.25};
 
 PID turn_pid{turn_pid_cfg};
 
 PID::pid_config_t drive_mc_pid_cfg{
-  .p = 0.0,
+  .p = 0.06,
   .i = 0.0,
   .d = 0.0,
   .deadband = 0.0,
-  .on_target_time = 0.0,
+  .on_target_time = 0.5,
 };
 
 FeedForward::ff_config_t drive_mc_ff_cfg{
   .kS = 0.05,
-  .kV = 0.012,
-  .kA = 0.001,
+  .kV = 0.010,
+  .kA = 0.003,
 };
 
 MotionController::m_profile_cfg_t drive_mc_fast_cfg{
-  .max_v = 50,
+  .max_v = 40,
   .accel = 50,
   .pid_cfg = drive_mc_pid_cfg,
   .ff_cfg = drive_mc_ff_cfg,
 };
 
 MotionController drive_mc_fast(drive_mc_fast_cfg);
-
-PID::pid_config_t turn_mc_pid_cfg{
-  .p = 0.0,
-  .i = 0.0,
-  .d = 0.0,
-  .deadband = 0.0,
-  .on_target_time = 0.0,
-};
-
-FeedForward::ff_config_t turn_mc_ff_cfg{
-  .kS = 0.0,
-  .kV = 0.0,
-  .kA = 0.0,
-};
-
-MotionController::m_profile_cfg_t turn_mc_fast_cfg{
-  .max_v = 0,
-  .accel = 0,
-  .pid_cfg = turn_mc_pid_cfg,
-  .ff_cfg = turn_mc_ff_cfg,
-};
-
-MotionController turn_mc_fast(turn_mc_fast_cfg);
-
 
 // ======== SUBSYSTEMS ========
 
@@ -139,7 +107,7 @@ robot_specs_t robot_cfg = {
 
   .drive_correction_cutoff = 8.0,
   .drive_feedback = &drive_mc_fast,
-  .turn_feedback = &turn_mc_fast,
+  .turn_feedback = &turn_pid,
   .correction_pid = drive_correction_pid,
 };
 
@@ -160,7 +128,7 @@ void robot_init() {
     Brain.Screen,
     {
       new VideoPlayer(),
-      new screen::PIDPage(drive_pid, "drive"),
+      new screen::PIDPage(turn_pid, "turn"),
       new screen::OdometryPage(odom, 12.1, 14.95, true),
       new screen::StatsPage(motor_names),
     },

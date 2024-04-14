@@ -1,13 +1,13 @@
 #include "competition/opcontrol.h"
-#include "robot-config.h"
 #include "automation.h"
-#include "vex.h"
+#include "robot-config.h"
 #include "tuning.h"
+#include "vex.h"
 
 #define SOFTTEST
 #define LINK_BUTTON_AND_DIGOUT(but, sol) but.pressed([]() { sol.set(!sol.value()); })
 
-std::atomic<bool> drive(false);
+std::atomic<bool> drive(true);
 std::atomic<TankDrive::BrakeType> brake_type(TankDrive::BrakeType::None);
 
 // Button definitions
@@ -32,23 +32,23 @@ void opcontrol() {
     vexDelay(1);
   }
 
-  #ifdef SOFTTEST
-    con.ButtonUp.pressed([]() { drive = !drive; });
+#ifdef SOFTTEST
+  con.ButtonUp.pressed([]() { drive = !drive; });
 
-    con.ButtonLeft.pressed([]() { odom.set_position({.x = 0, .y = 0, .rot = 0}); });
+  con.ButtonLeft.pressed([]() { odom.set_position({.x = 0, .y = 0, .rot = 0}); });
 
-    // con.ButtonA.pressed([]() {
-    //   CommandController cc{
-    //     // drive_sys.DriveForwardCmd(drive_pid, 48.0, vex::fwd),
-    //     drive_sys.TurnDegreesCmd(90),
-    //     // new IntakeToHold()
-    //   };
-    //   cc.add_cancel_func([](){return con.ButtonX.pressing();});
-    //   cc.run();
-    // });
+  // con.ButtonA.pressed([]() {
+  //   CommandController cc{
+  //     // drive_sys.DriveForwardCmd(drive_pid, 48.0, vex::fwd),
+  //     drive_sys.TurnDegreesCmd(90),
+  //     // new IntakeToHold()
+  //   };
+  //   cc.add_cancel_func([](){return con.ButtonX.pressing();});
+  //   cc.run();
+  // });
 
-    LINK_BUTTON_AND_DIGOUT(con.ButtonY, vision_light);
-  #endif
+  LINK_BUTTON_AND_DIGOUT(con.ButtonY, vision_light);
+#endif
 
   LINK_BUTTON_AND_DIGOUT(left_wing_buttom, left_wing_sol);
   LINK_BUTTON_AND_DIGOUT(right_wing_button, right_wing_sol);
@@ -71,9 +71,9 @@ void opcontrol() {
   while (true) {
     fflush(stdout);
     if (drive) {
-      // if (!intake_button.pressing() && !outtake_button.pressing()) {
-      //   intake_motors.stop(vex::brakeType::hold);
-      // }
+      if (!intake_button.pressing() && !outtake_button.pressing()) {
+        intake_motors.stop(vex::brakeType::hold);
+      }
 
       double straight = (double)con.Axis3.position() / 100;
       double turn = (double)con.Axis1.position() / 100;
