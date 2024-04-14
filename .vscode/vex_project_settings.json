@@ -5,8 +5,8 @@
 	},
 	"project": {
 		"name": "Jabove",
-		"description": "Why isn't it another robot for the 2023-2024 season!",
-		"creationDate": "Wed, 03 Apr 2024 00:09:34 GMT",
+		"description": "Why, isn't it another robot for the 2023-2024 season!",
+		"creationDate": "Wed, 10 Apr 2024 03:06:44 GMT",
 		"platform": "V5",
 		"language": "cpp",
 		"slot": 1,

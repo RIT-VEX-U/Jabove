@@ -32,10 +32,8 @@ extern OdometryTank odom;
 extern TankDrive drive_sys;
 extern PID drive_pid;
 
-void intake(double volts);
-void intake();
-void outtake(double volts);
-void outtake();
+extern robot_specs_t robot_cfg;
+extern MotionController drive_mc_fast;
 
 // ================ UTILS ================
 

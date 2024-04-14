@@ -4,6 +4,16 @@
 #include <tuple>
 
 // ================ Autonomous Abstractions ================
+class IntakeToHold : public AutoCommand {
+public:
+  bool run() override;
+};
+
+void intake(double volts);
+void intake();
+void outtake(double volts);
+void outtake();
+
 struct vision_filter_s {
   int min_area;
   int max_area;

@@ -8,6 +8,29 @@
 
 // ================ Autonomous Abstractions ================
 
+// INTAKE HELPERS
+const double intake_volts = 10.0;
+
+bool ball_in_intake() { 
+  return intake_sensor.objectDistance(vex::distanceUnits::mm) < intake_sensor_dist_mm; 
+}
+
+bool IntakeToHold::run() {
+    intake_motors.spin(REV, intake_volts, vex::volt);
+
+    while (!ball_in_intake()) { vexDelay(100); }
+
+    intake_motors.stop(vex::brakeType::hold);
+    
+    return true;
+};
+
+void intake(double volts) { intake_motors.spin(REV, volts, vex::volt); };
+void intake() { intake_motors.spin(REV, intake_volts, vex::volt); };
+
+void outtake(double volts) { intake_motors.spin(FWD, volts, vex::volt); };
+void outtake() { intake_motors.spin(FWD, intake_volts, vex::volt); };
+
 // VISION TRACKING
 vision_filter_s default_vision_filter = {
   .min_area = 300,
@@ -30,7 +53,7 @@ PID::pid_config_t angle_pid_cfg{.p = 0.004, .d = 0.0005};
 VisionTrackTriballCommand::VisionTrackTriballCommand(vision_filter_s &filter)
     : angle_fb(angle_pid_cfg, angle_ff_cfg), filter(filter) {}
 
-bool ball_in_intake = []() { return intake_sensor.objectDistance(vex::distanceUnits::mm) < intake_sensor_dist_mm; };
+// bool ball_in_intake = []() { return intake_sensor.objectDistance(vex::distanceUnits::mm) < intake_sensor_dist_mm; };
 
 bool VisionTrackTriballCommand::run() {
   static const int center_x = 160;
@@ -43,7 +66,7 @@ bool VisionTrackTriballCommand::run() {
   vision_light.set(true);
   std::vector<vision::object> sensed_obj = vision_run_filter(TRIBALL);
 
-  if (ball_in_intake) {
+  if (ball_in_intake()) {
     // Done when triball is in the intake
     drive_sys.stop();
     vision_light.set(false);

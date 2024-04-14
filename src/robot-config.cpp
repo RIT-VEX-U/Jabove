@@ -12,8 +12,8 @@ vex::controller con;
 vex::inertial imu(vex::PORT19, vex::turnType::right);
 
 // Analog sensors
-const double intake_sensor_dist_mm = 100;
-vex::distance intake_sensor(vex::PORT3);
+const double intake_sensor_dist_mm = 50;
+vex::distance intake_sensor(vex::PORT21);
 
 // ================ OUTPUTS ================
 // Climb Motors
@@ -26,7 +26,7 @@ vex::motor right_intake(vex::PORT10, vex::gearSetting::ratio6_1, false);
 
 // Drivetrain motors
 vex::motor left_front(vex::PORT2, vex::gearSetting::ratio6_1, true);
-vex::motor left_second(vex::PORT5, vex::gearSetting::ratio6_1, true);
+vex::motor left_second(vex::PORT14, vex::gearSetting::ratio6_1, true);
 vex::motor left_third(vex::PORT4, vex::gearSetting::ratio6_1, true);
 vex::motor left_back(vex::PORT11, vex::gearSetting::ratio6_1, true);
 
@@ -59,22 +59,75 @@ PID::pid_config_t drive_pid_cfg{
   .p = 0.1,
   .i = 0.0,
   .d = 0.005,
-  .deadband = 1.0,
-  .on_target_time = 0.5,
+  .deadband = 0.5,
+  .on_target_time = 0.1,
 };
 
 PID drive_pid{drive_pid_cfg};
 
 PID::pid_config_t drive_correction_pid{
-  .p = 0.0125,
+  .p = 0.00,
   .i = 0.0,
   .d = 0.0,
   .deadband = 0.0,
 };
 
-PID::pid_config_t turn_pid_cfg{.p = 0.0, .i = 0.0, .d = 0.0, .deadband = 0.0, .on_target_time = 0.0};
+PID::pid_config_t turn_pid_cfg{
+  .p = 0.001, 
+  .i = 0.0, 
+  .d = 0.0, 
+  .deadband = 0.0, 
+  .on_target_time = 0.0
+};
 
 PID turn_pid{turn_pid_cfg};
+
+PID::pid_config_t drive_mc_pid_cfg{
+  .p = 0.0,
+  .i = 0.0,
+  .d = 0.0,
+  .deadband = 0.0,
+  .on_target_time = 0.0,
+};
+
+FeedForward::ff_config_t drive_mc_ff_cfg{
+  .kS = 0.05,
+  .kV = 0.012,
+  .kA = 0.001,
+};
+
+MotionController::m_profile_cfg_t drive_mc_fast_cfg{
+  .max_v = 50,
+  .accel = 50,
+  .pid_cfg = drive_mc_pid_cfg,
+  .ff_cfg = drive_mc_ff_cfg,
+};
+
+MotionController drive_mc_fast(drive_mc_fast_cfg);
+
+PID::pid_config_t turn_mc_pid_cfg{
+  .p = 0.0,
+  .i = 0.0,
+  .d = 0.0,
+  .deadband = 0.0,
+  .on_target_time = 0.0,
+};
+
+FeedForward::ff_config_t turn_mc_ff_cfg{
+  .kS = 0.0,
+  .kV = 0.0,
+  .kA = 0.0,
+};
+
+MotionController::m_profile_cfg_t turn_mc_fast_cfg{
+  .max_v = 0,
+  .accel = 0,
+  .pid_cfg = turn_mc_pid_cfg,
+  .ff_cfg = turn_mc_ff_cfg,
+};
+
+MotionController turn_mc_fast(turn_mc_fast_cfg);
+
 
 // ======== SUBSYSTEMS ========
 
@@ -85,20 +138,13 @@ robot_specs_t robot_cfg = {
   .dist_between_wheels = 10.0,
 
   .drive_correction_cutoff = 8.0,
-  .drive_feedback = &drive_pid,
-  .turn_feedback = &turn_pid,
+  .drive_feedback = &drive_mc_fast,
+  .turn_feedback = &turn_mc_fast,
   .correction_pid = drive_correction_pid,
 };
 
 OdometryTank odom(center_enc, center_enc, robot_cfg, &imu);
 TankDrive drive_sys(left_motors, right_motors, robot_cfg, &odom);
-
-const double intake_volts = 10.0;
-void intake(double volts) { intake_motors.spin(FWD, volts, vex::volt); };
-void intake() { intake_motors.spin(FWD, intake_volts, vex::volt); };
-
-void outtake(double volts) { intake_motors.spin(REV, volts, vex::volt); };
-void outtake() { intake_motors.spin(REV, intake_volts, vex::volt); };
 
 // ================ UTILS ================
 
