@@ -132,7 +132,6 @@ void TankDrive::stop() {
 }
 
 void TankDrive::drive_tank_raw(double left_norm, double right_norm) {
-  printf("l: %2.2f, r: %2.2f\n", left_norm, right_norm);
   left_motors.spin(directionType::fwd, left_norm * 12, voltageUnits::volt);
   right_motors.spin(directionType::fwd, right_norm * 12, voltageUnits::volt);
 }
