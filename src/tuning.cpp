@@ -182,14 +182,14 @@ void tune_drive_pid(DriveType dt) {
   if (con.ButtonB.pressing())
     odom.set_position();
 
-  constexpr double drive_target = 30;
+  constexpr double drive_target = 36;
 
   if (con.ButtonA.pressing()) {
     auto pos = odom.get_position();
-    printf(
-      "%.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f\n", pos.y, drive_mc_fast.get_motion().pos + drive_target, pos.rot,
-      odom.get_speed(), drive_mc_fast.get_motion().vel, odom.get_accel(), drive_mc_fast.get_motion().accel
-    );
+    // printf(
+    //   "%.2f, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f\n", pos.y, drive_mc_fast.get_motion().pos + drive_target, pos.rot,
+    //   odom.get_speed(), drive_mc_fast.get_motion().vel, odom.get_accel(), drive_mc_fast.get_motion().accel
+    // );
     // printf("accel: %2f\n", odom.get_accel());
 
     if (dt == DRIVE && (done || drive_sys.drive_to_point(0, drive_target, fwd, drive_mc_fast))) {

@@ -1,4 +1,5 @@
 #include "competition/opcontrol.h"
+#include "competition/autonomous.h"
 #include "automation.h"
 #include "robot-config.h"
 #include "tuning.h"
@@ -46,8 +47,6 @@ void opcontrol() {
   //   cc.add_cancel_func([](){return con.ButtonX.pressing();});
   //   cc.run();
   // });
-
-  LINK_BUTTON_AND_DIGOUT(con.ButtonY, vision_light);
 #endif
 
   LINK_BUTTON_AND_DIGOUT(left_wing_buttom, left_wing_sol);
@@ -55,6 +54,7 @@ void opcontrol() {
   LINK_BUTTON_AND_DIGOUT(climb_wing_button, climb_wing_sol);
   LINK_BUTTON_AND_DIGOUT(both_wing_button, left_wing_sol);
   LINK_BUTTON_AND_DIGOUT(both_wing_button, right_wing_sol);
+  LINK_BUTTON_AND_DIGOUT(con.ButtonY, vision_light);
 
   // intake
   intake_button.pressed([]() { intake(); });
@@ -90,8 +90,24 @@ void testing() {
   while (imu.isCalibrating()) {
     vexDelay(1);
   }
+
+  LINK_BUTTON_AND_DIGOUT(con.ButtonY, vision_light);
+
+
+  con.ButtonA.pressed([]() {
+    CommandController cc{
+      drive_sys.DriveForwardCmd(32, vex::directionType::fwd)->withTimeout(2.0),
+      drive_sys.TurnDegreesCmd(180, 0.3)->withTimeout(2.0),
+      drive_sys.DriveForwardCmd(32, vex::fwd)->withTimeout(2.0)
+    };
+    cc.add_cancel_func([](){return con.ButtonX.pressing();});
+    cc.run();
+  });
+
   while (1) {
-    tune_drive_pid(DRIVE);
+    auto pos = odom.get_position();
+    printf("X: %.2f, Y: %.2f, rot: %.2f\n", pos.x, pos.y, pos.rot);
+    // tune_drive_pid(DRIVE);
     vexDelay(20);
   }
 }
