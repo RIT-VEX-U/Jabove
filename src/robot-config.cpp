@@ -66,7 +66,7 @@ PID::pid_config_t drive_pid_cfg{
 PID drive_pid{drive_pid_cfg};
 
 PID::pid_config_t drive_correction_pid{
-  .p = 0.0,
+  .p = 0.00115,
   .i = 0.0,
   .d = 0.0,
   .deadband = 0.0,
@@ -76,7 +76,7 @@ PID::pid_config_t turn_pid_cfg{
   .p = 0.018, 
   .i = 0.0, 
   .d = 0.00115, 
-  .deadband = 3.0, 
+  .deadband = 2.5, 
   .on_target_time = 0.25,
   .error_method = PID::ERROR_TYPE::ANGULAR
 };

@@ -93,12 +93,37 @@ void testing() {
 
   LINK_BUTTON_AND_DIGOUT(con.ButtonY, vision_light);
 
-
   con.ButtonA.pressed([]() {
+    const double test_distance = 40;
+
+    odom.set_position({.x=0, .y=0, .rot=90});
+
     CommandController cc{
-      drive_sys.DriveForwardCmd(32, vex::directionType::fwd)->withTimeout(2.0),
-      drive_sys.TurnDegreesCmd(180, 0.3)->withTimeout(2.0),
-      drive_sys.DriveForwardCmd(32, vex::fwd)->withTimeout(2.0)
+      drive_sys.DriveForwardCmd(test_distance, vex::directionType::fwd)->withTimeout(2.0),
+      new DelayCommand(500),
+      drive_sys.TurnToHeadingCmd(270, 0.3)->withTimeout(2.0),
+      new DelayCommand(500),
+      drive_sys.DriveForwardCmd(test_distance, vex::fwd)->withTimeout(2.0),
+      new DelayCommand(500),
+      drive_sys.TurnToHeadingCmd(90, 0.3)->withTimeout(2.0),
+    };
+    cc.add_cancel_func([](){return con.ButtonX.pressing();});
+    cc.run();
+  });
+
+  con.ButtonB.pressed([]() {
+    const double test_distance = 40;
+    
+    odom.set_position({.x=0, .y=0, .rot=90});
+
+    CommandController cc{
+      drive_sys.DriveForwardCmd(test_distance, vex::directionType::fwd, 1)->withTimeout(2.0),
+      new DelayCommand(500),
+      drive_sys.TurnToHeadingCmd(270, 0.3)->withTimeout(2.0),
+      new DelayCommand(500),
+      drive_sys.DriveForwardCmd(test_distance, vex::fwd, 1)->withTimeout(2.0),
+      new DelayCommand(500),
+      drive_sys.TurnToHeadingCmd(90, 0.3)->withTimeout(2.0),
     };
     cc.add_cancel_func([](){return con.ButtonX.pressing();});
     cc.run();
