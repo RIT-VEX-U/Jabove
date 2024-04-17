@@ -8,15 +8,13 @@
  */
 void just_auto();
 
-void message_test();
-
 void autonomous()
 {
     while (imu.isCalibrating()) {
         vexDelay(1);
     }
 
-    message_test();
+    just_auto();
 }
 
 AutoCommand *intake_cmd(double amt = 8.0) {
@@ -73,14 +71,6 @@ AutoCommand *stop_intake() {
     intake(0);
     return true;
   });
-}
-
-void message_test(){
-  CommandController cc{
-    MSGCMD("hello")
-  };
-
-  cc.run();
 }
 
 void just_auto() {
