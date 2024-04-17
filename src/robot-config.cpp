@@ -99,7 +99,7 @@ FeedForward::ff_config_t drive_mc_ff_cfg{
 MotionController::m_profile_cfg_t drive_mc_fast_cfg{
   .max_v = 60.6,
   .accel = 190,
-  .decel = 190,
+  .decel = 260,
   .pid_cfg = drive_mc_pid_cfg,
   .ff_cfg = drive_mc_ff_cfg,
 };
@@ -115,7 +115,7 @@ robot_specs_t robot_cfg = {
   .dist_between_wheels = 10.0,
 
   .drive_correction_cutoff = 8.0,
-  .drive_feedback = &drive_mc_fast,
+  .drive_feedback = &drive_pid,
   .turn_feedback = &turn_pid,
   .correction_pid = drive_correction_pid,
 };

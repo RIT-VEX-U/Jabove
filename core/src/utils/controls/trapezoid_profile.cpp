@@ -47,8 +47,12 @@ motion_t TrapezoidProfile::calculate(double time_s) {
 
   // If the time during the "max velocity" state is negative, use an S profile
   if (max_vel_time < 0) {
-    accel_time = sqrt(fabs(delta_pos / accel));
-    decel_time = sqrt(fabs(delta_pos / decel));
+
+    double accel_dp = (decel / (accel + decel)) * delta_pos;
+    double decel_dp = delta_pos - accel_dp;
+
+    accel_time = sqrt(fabs(accel_dp / accel));
+    decel_time = sqrt(fabs(decel_dp / decel));
     max_vel_time = 0;
     this->time = accel_time + decel_time;
   }
@@ -92,9 +96,8 @@ motion_t TrapezoidProfile::calculate(double time_s) {
   }
 
   double s_max_vel = CALC_POS(max_vel_time, 0, max_v_local, s_accel);
-
   // Displacement during deceleration
-  out.pos = CALC_POS(time_s - (accel_time)-max_vel_time, -decel_local, max_v_local, start + s_max_vel);
+  out.pos = CALC_POS(time_s - accel_time - max_vel_time, -decel_local, max_v_local, start + s_max_vel);
   out.vel = CALC_VEL(time_s - accel_time - max_vel_time, -decel_local, max_v_local);
   out.accel = -decel_local;
   return out;

@@ -27,26 +27,27 @@ const vex::controller::button &climb_wing_button = con.ButtonRight;
  * Main entrypoint for the driver control period
  */
 void opcontrol() {
-  testing();
+  //   testing();/
   // ================ INIT ================
   while (imu.isCalibrating()) {
     vexDelay(1);
   }
-
 #ifdef SOFTTEST
   con.ButtonUp.pressed([]() { drive = !drive; });
 
   con.ButtonLeft.pressed([]() { odom.set_position({.x = 0, .y = 0, .rot = 0}); });
 
-  // con.ButtonA.pressed([]() {
-  //   CommandController cc{
-  //     // drive_sys.DriveForwardCmd(drive_pid, 48.0, vex::fwd),
-  //     drive_sys.TurnDegreesCmd(90),
-  //     // new IntakeToHold()
-  //   };
-  //   cc.add_cancel_func([](){return con.ButtonX.pressing();});
-  //   cc.run();
-  // });
+  con.ButtonA.pressed([]() {
+    CommandController cc{
+      drive_sys.DriveForwardCmd(drive_pid, 48.0, vex::fwd),
+      //   drive_sys.TurnDegreesCmd(90),
+      // new IntakeToHold()
+    };
+    cc.add_cancel_func([]() { return con.ButtonX.pressing(); });
+    drive = false;
+    cc.run();
+    drive = true;
+  });
 #endif
 
   LINK_BUTTON_AND_DIGOUT(left_wing_buttom, left_wing_sol);
