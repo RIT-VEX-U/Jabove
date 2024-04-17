@@ -32,8 +32,9 @@ public:
    * this path
    */
   typedef struct {
-    double max_v;                    ///< the maximum velocity the robot can drive
-    double accel;                    ///< the most acceleration the robot can do
+    double max_v; ///< the maximum velocity the robot can drive
+    double accel; ///< the most acceleration the robot can do
+    double decel;
     PID::pid_config_t pid_cfg;       ///< configuration parameters for the internal PID controller
     FeedForward::ff_config_t ff_cfg; ///< configuration parameters for the internal
   } m_profile_cfg_t;
@@ -108,8 +109,8 @@ public:
    * @param duration Amount of time the robot should be moving for the test
    * @return A tuned feedforward object
    */
-  static FeedForward::ff_config_t tune_feedforward(TankDrive &drive, OdometryTank &odometry, double pct = 0.6,
-                                                   double duration = 2);
+  static FeedForward::ff_config_t
+  tune_feedforward(TankDrive &drive, OdometryTank &odometry, double pct = 0.6, double duration = 2);
 
 private:
   m_profile_cfg_t config;

@@ -9,7 +9,7 @@ vex::controller con;
 
 // ================ INPUTS ================
 // Digital sensors
-vex::inertial imu(vex::PORT19, vex::turnType::left);
+vex::inertial imu(vex::PORT19, vex::turnType::right);
 
 // Analog sensors
 const double intake_sensor_dist_mm = 50;
@@ -73,13 +73,12 @@ PID::pid_config_t drive_correction_pid{
 };
 
 PID::pid_config_t turn_pid_cfg{
-  .p = 0.018, 
-  .i = 0.0, 
-  .d = 0.00115, 
-  .deadband = 2.5, 
+  .p = 0.018,
+  .i = 0.0,
+  .d = 0.00115,
+  .deadband = 2.5,
   .on_target_time = 0.25,
-  .error_method = PID::ERROR_TYPE::ANGULAR
-};
+  .error_method = PID::ERROR_TYPE::ANGULAR};
 
 PID turn_pid{turn_pid_cfg};
 
@@ -93,13 +92,14 @@ PID::pid_config_t drive_mc_pid_cfg{
 
 FeedForward::ff_config_t drive_mc_ff_cfg{
   .kS = 0.05,
-  .kV = 0.010,
-  .kA = 0.003,
+  .kV = 0.015,
+  .kA = 0.012,
 };
 
 MotionController::m_profile_cfg_t drive_mc_fast_cfg{
-  .max_v = 40,
-  .accel = 50,
+  .max_v = 60.6,
+  .accel = 190,
+  .decel = 190,
   .pid_cfg = drive_mc_pid_cfg,
   .ff_cfg = drive_mc_ff_cfg,
 };
@@ -119,7 +119,6 @@ robot_specs_t robot_cfg = {
   .turn_feedback = &turn_pid,
   .correction_pid = drive_correction_pid,
 };
-
 
 OdometryTank odom(center_enc, center_enc, robot_cfg, &imu);
 TankDrive drive_sys(left_motors, right_motors, robot_cfg, &odom);

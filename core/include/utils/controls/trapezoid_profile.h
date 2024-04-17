@@ -39,7 +39,7 @@ public:
    * @param max_v Maximum velocity the robot can run at
    * @param accel Maximum acceleration of the robot
    */
-  TrapezoidProfile(double max_v, double accel);
+  TrapezoidProfile(double max_v, double accel, double decel);
 
   /**
    * @brief Run the trapezoidal profile based on the time that's ellapsed
@@ -80,5 +80,6 @@ private:
   double start, end; ///< the start and ending position of the profile
   double max_v;      ///< the maximum velocity to travel at for this profile
   double accel;      ///< the rate of acceleration to use for this profile.
-  double time;       ///< the current point in time along the path
+  double decel;
+  double time; ///< the current point in time along the path
 };

@@ -1,6 +1,6 @@
 #include "competition/opcontrol.h"
-#include "competition/autonomous.h"
 #include "automation.h"
+#include "competition/autonomous.h"
 #include "robot-config.h"
 #include "tuning.h"
 #include "vex.h"
@@ -90,13 +90,19 @@ void testing() {
   while (imu.isCalibrating()) {
     vexDelay(1);
   }
+  while (true) {
+    tune_drive_pid(DriveType::DRIVE);
+    // tune_drive_ff_kv(DRIVE, 0.05);
+    // tune_drive_motion_maxv(DriveType::DRIVE);
+    vexDelay(20);
+  }
 
   LINK_BUTTON_AND_DIGOUT(con.ButtonY, vision_light);
 
   con.ButtonA.pressed([]() {
-    const double test_distance = 40;
+    const double test_distance = 80;
 
-    odom.set_position({.x=0, .y=0, .rot=90});
+    odom.set_position({.x = 0, .y = 0, .rot = 90});
 
     CommandController cc{
       drive_sys.DriveForwardCmd(test_distance, vex::directionType::fwd)->withTimeout(2.0),
@@ -107,14 +113,14 @@ void testing() {
       new DelayCommand(500),
       drive_sys.TurnToHeadingCmd(90, 0.3)->withTimeout(2.0),
     };
-    cc.add_cancel_func([](){return con.ButtonX.pressing();});
+    cc.add_cancel_func([]() { return con.ButtonX.pressing(); });
     cc.run();
   });
 
   con.ButtonB.pressed([]() {
     const double test_distance = 40;
-    
-    odom.set_position({.x=0, .y=0, .rot=90});
+
+    odom.set_position({.x = 0, .y = 0, .rot = 90});
 
     CommandController cc{
       drive_sys.DriveForwardCmd(test_distance, vex::directionType::fwd, 1)->withTimeout(2.0),
@@ -125,7 +131,7 @@ void testing() {
       new DelayCommand(500),
       drive_sys.TurnToHeadingCmd(90, 0.3)->withTimeout(2.0),
     };
-    cc.add_cancel_func([](){return con.ButtonX.pressing();});
+    cc.add_cancel_func([]() { return con.ButtonX.pressing(); });
     cc.run();
   });
 

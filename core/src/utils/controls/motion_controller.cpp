@@ -12,7 +12,7 @@
  *    ff_cfg Definitions of kS, kV, and kA
  */
 MotionController::MotionController(m_profile_cfg_t &config)
-    : config(config), pid(config.pid_cfg), ff(config.ff_cfg), profile(config.max_v, config.accel) {}
+    : config(config), pid(config.pid_cfg), ff(config.ff_cfg), profile(config.max_v, config.accel, config.decel) {}
 
 /**
  * @brief Initialize the motion profile for a new movement
@@ -92,8 +92,8 @@ motion_t MotionController::get_motion() const { return cur_motion; }
  * @param duration Amount of time the robot should be moving for the test
  * @return A tuned feedforward object
  */
-FeedForward::ff_config_t MotionController::tune_feedforward(TankDrive &drive, OdometryTank &odometry, double pct,
-                                                            double duration) {
+FeedForward::ff_config_t
+MotionController::tune_feedforward(TankDrive &drive, OdometryTank &odometry, double pct, double duration) {
   FeedForward::ff_config_t out = {};
 
   pose_t start_pos = odometry.get_position();
@@ -155,9 +155,9 @@ FeedForward::ff_config_t MotionController::tune_feedforward(TankDrive &drive, Od
   std::vector<std::pair<double, double>> accel_per_pct;
   for (int i = 0; i < vel_data_points.size(); i++) {
     accel_per_pct.push_back(std::pair<double, double>(
-        pct - out.kS - (vel_data_points[i].second * out.kV), // Acceleration-causing percent (X variable)
-        accel_data_points[i].second                          // Measured acceleration (Y variable)
-        ));
+      pct - out.kS - (vel_data_points[i].second * out.kV), // Acceleration-causing percent (X variable)
+      accel_data_points[i].second                          // Measured acceleration (Y variable)
+    ));
   }
 
   // kA is the reciprocal of the slope of the linear regression
