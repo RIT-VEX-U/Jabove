@@ -2,10 +2,13 @@
 #include "robot-config.h"
 #include "automation.h"
 
+
 /**
  * Main entrypoint for the autonomous period
  */
 void just_auto();
+
+void message_test();
 
 void autonomous()
 {
@@ -13,7 +16,7 @@ void autonomous()
         vexDelay(1);
     }
 
-    just_auto();
+    message_test();
 }
 
 AutoCommand *intake_cmd(double amt = 8.0) {
@@ -70,6 +73,14 @@ AutoCommand *stop_intake() {
     intake(0);
     return true;
   });
+}
+
+void message_test(){
+  CommandController cc{
+    MSGCMD("hello")
+  };
+
+  cc.run();
 }
 
 void just_auto() {
