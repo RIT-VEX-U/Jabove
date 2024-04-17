@@ -19,6 +19,7 @@
 #include "../core/include/utils/command_structure/delay_command.h"
 #include "../core/include/utils/command_structure/drive_commands.h"
 #include "../core/include/utils/command_structure/flywheel_commands.h"
+#include "../core/include/utils/command_structure/message_command.h"
 
 #include "../core/include/utils/controls/bang_bang.h"
 #include "../core/include/utils/controls/feedback_base.h"
