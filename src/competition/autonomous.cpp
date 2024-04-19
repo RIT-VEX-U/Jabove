@@ -1,20 +1,18 @@
 #include "competition/autonomous.h"
-#include "robot-config.h"
 #include "automation.h"
-
+#include "robot-config.h"
 
 /**
  * Main entrypoint for the autonomous period
  */
 void just_auto();
 
-void autonomous()
-{
-    while (imu.isCalibrating()) {
-        vexDelay(1);
-    }
+void autonomous() {
+  while (imu.isCalibrating()) {
+    vexDelay(1);
+  }
 
-    just_auto();
+  just_auto();
 }
 
 AutoCommand *intake_cmd(double amt = 8.0) {
@@ -98,7 +96,12 @@ void just_auto() {
     // get close to wall
     drive_sys.TurnToHeadingCmd(240, 0.65)->withTimeout(2.0),
     drive_sys.DriveToPointCmd({33.5,12.5}, vex::fwd,0.25)->withTimeout(3.0),
-
+    new FunctionCommand([](){
+            auto pose = odom.get_position();
+    printf("(%.2f, %.2f) - %.2f\n", pose.x, pose.y, pose.rot);
+    return true;
+    }),
+    new DelayCommand(5000),
     // turn and back up to bar
     drive_sys.TurnToPointCmd(22.0,16.0, vex::reverse,0.65)->withTimeout(5.0),
     drive_sys.DriveToPointCmd({21,16.0},vex::reverse,0.15)->withTimeout(5.0),
