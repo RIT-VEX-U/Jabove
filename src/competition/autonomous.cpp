@@ -77,7 +77,7 @@ void just_auto() {
     odom.SetPositionCmd({.x = 40, .y = 7, .rot = 90}),     
     drive_sys.DriveToPointCmd({40, 35}, vex::fwd, 0.75)->withTimeout(2.0),
     
-    // pick up second
+    // pick up field triball
     drive_sys.TurnToPointCmd(47.2, 54.7, vex::fwd, 0.65)->withTimeout(2.0),
     intake_cmd(12.0),
     drive_sys.DriveToPointCmd({47.63, 54.5}, vex::fwd, 0.5)->withTimeout(2.0),
@@ -86,25 +86,29 @@ void just_auto() {
     drive_sys.TurnToPointCmd(37.5, 20.0, vex::fwd, 0.65)->withTimeout(2.0),
     drive_sys.DriveToPointCmd({37.5, 20.0}, vex::fwd, 0.75)->withTimeout(2.0),
 
-    // Drop Second
+    // Drop triball off
     drive_sys.TurnToHeadingCmd(340, 0.65)->withTimeout(2.0),
     outtake_cmd(),
-    new DelayCommand(600),
+    new DelayCommand(450),
     stop_intake(),
 
 
     // get close to wall
-    drive_sys.TurnToHeadingCmd(240, 0.65)->withTimeout(2.0),
-    drive_sys.DriveToPointCmd({33.5,12.5}, vex::fwd,0.25)->withTimeout(3.0),
-    new FunctionCommand([](){
-            auto pose = odom.get_position();
-    printf("(%.2f, %.2f) - %.2f\n", pose.x, pose.y, pose.rot);
-    return true;
-    }),
-    new DelayCommand(5000),
+    drive_sys.TurnToHeadingCmd(240, 0.65)->withTimeout(2.0), 
+    drive_sys.DriveToPointCmd({33.33,12.10}, vex::fwd, 0.3)->withTimeout(3.0),
+
+    new DelayCommand(450),
     // turn and back up to bar
-    drive_sys.TurnToPointCmd(22.0,16.0, vex::reverse,0.65)->withTimeout(5.0),
-    drive_sys.DriveToPointCmd({21,16.0},vex::reverse,0.15)->withTimeout(5.0),
+
+    drive_sys.TurnToHeadingCmd(340, 0.5)->withTimeout(2.0),
+
+    drive_sys.DriveToPointCmd({21.8, 15.8},vex::reverse,0.15)->withTimeout(2.0), // (22.7, 16) - 340
+
+    drive_sys.DriveForwardCmd(2.2, vex::directionType::rev, 0.2)
+                            ->withCancelCondition(drive_sys.DriveStalledCondition(0.12))
+                            ->withTimeout(1.0),
+
+    // match load
     new RepeatUntil({
         toggle_wing_r(), // out
         new DelayCommand(400),
@@ -114,34 +118,58 @@ void just_auto() {
 
     // pushing
     toggle_wing_l(),
+
     outtake_cmd(),
-    drive_sys.DriveToPointCmd({37, 6.5},vex::fwd,0.5)->withTimeout(3.0),
-    drive_sys.TurnToHeadingCmd(-10, 0.5)->withTimeout(3.0),
-  // stop things circa half court
-    new Async(new FunctionCommand([](){
-      if (odom.get_position().x > 55){
-        left_wing_sol.set(false);
-      }
-      if (odom.get_position().x > 69){
-        left_wing_sol.set(true);
-        outtake(0);
-        return true;
-      }
-      return false;
-    })),
 
-    // across half court
-    drive_sys.DriveToPointCmd({108, 5},vex::fwd, 0.75)->withTimeout(3.0),
+    // push to this point
+    drive_sys.DriveToPointCmd({112, 6}, vex::fwd, 0.5)->withTimeout(4.0),
 
+    // go to pushing point
     drive_sys.TurnToPointCmd(122.5,16.52,vex::fwd, 0.5)->withTimeout(1.0),
     drive_sys.DriveToPointCmd({122.5, 16.52},vex::fwd, 0.5)->withTimeout(3.0),
 
     toggle_wing_l(),
+
+    // flip around
     drive_sys.TurnDegreesCmd(-180)->withTimeout(0.35), // start spinning the right way
 
+    new DebugCommand(),
+
+    // initial push
     drive_sys.TurnToPointCmd(132.5,36.2, vex::reverse, 0.5)->withTimeout(3.0),
     drive_sys.DriveForwardCmd(25, vex::reverse, 1.0)->withTimeout(1.5),
     drive_sys.DriveForwardCmd(27, vex::fwd, 1.0)->withTimeout(1.5),
+
+    new DebugCommand(),
+
+    // drive_sys.DriveToPointCmd({37, 6.5},vex::fwd,0.5)->withTimeout(3.0),
+    // drive_sys.TurnToHeadingCmd(0, 0.5)->withTimeout(3.0),
+
+  // stop things circa half court
+    // new Async(new FunctionCommand([](){
+    //   if (odom.get_position().x > 55){
+    //     left_wing_sol.set(false);
+    //   }
+    //   if (odom.get_position().x > 69){
+    //     left_wing_sol.set(true);
+    //     outtake(0);
+    //     return true;
+    //   }
+    //   return false;
+    // })),
+
+    // across half court
+    // drive_sys.DriveToPointCmd({108, 5},vex::fwd, 0.75)->withTimeout(3.0),
+
+    // drive_sys.TurnToPointCmd(122.5,16.52,vex::fwd, 0.5)->withTimeout(1.0),
+    // drive_sys.DriveToPointCmd({122.5, 16.52},vex::fwd, 0.5)->withTimeout(3.0),
+
+    // toggle_wing_l(),
+    // drive_sys.TurnDegreesCmd(-180)->withTimeout(0.35), // start spinning the right way
+
+    // drive_sys.TurnToPointCmd(132.5,36.2, vex::reverse, 0.5)->withTimeout(3.0),
+    // drive_sys.DriveForwardCmd(25, vex::reverse, 1.0)->withTimeout(1.5),
+    // drive_sys.DriveForwardCmd(27, vex::fwd, 1.0)->withTimeout(1.5),
 
     // drive_sys.TurnToHeadingCmd(247, 0.65)->withTimeout(3.0),
     // drive_sys.DriveForwardCmd(27, vex::reverse, 1.0)->withTimeout(1.5),
@@ -151,17 +179,18 @@ void just_auto() {
     // drive_sys.DriveForwardCmd(20, vex::reverse, 1.0)->withTimeout(1.5),
     // drive_sys.DriveForwardCmd(27, vex::fwd, 1.0)->withTimeout(1.5),
 
-    drive_sys.TurnToHeadingCmd(90, 0.5)->withTimeout(2.0),
-    drive_sys.DriveTankCmd(-0.25,-0.25)->withTimeout(2.0),
-    drive_sys.DriveForwardCmd(2.0,vex::fwd, 0.5)->withTimeout(3.0),
+    // OLD JIDEWAYS CODE TO IMPLEMENT
+    // drive_sys.TurnToHeadingCmd(90, 0.5)->withTimeout(2.0),
+    // drive_sys.DriveTankCmd(-0.25,-0.25)->withTimeout(2.0),
+    // drive_sys.DriveForwardCmd(2.0,vex::fwd, 0.5)->withTimeout(3.0),
 
-    drive_sys.TurnToHeadingCmd(180, 0.5)->withTimeout(1.0),
-    drive_sys.DriveForwardCmd(38.0,vex::fwd, 0.5)->withTimeout(3.0),
-    drive_sys.TurnToHeadingCmd(70, 0.5)->withTimeout(3.0),
-    intake_cmd(12.0),
-    drive_sys.DriveForwardCmd(3.0, vex::fwd, 0.15)->withTimeout(4.0),
-    new DelayCommand(500),
-    intake_cmd(0),
+    // drive_sys.TurnToHeadingCmd(180, 0.5)->withTimeout(1.0),
+    // drive_sys.DriveForwardCmd(38.0,vex::fwd, 0.5)->withTimeout(3.0),
+    // drive_sys.TurnToHeadingCmd(70, 0.5)->withTimeout(3.0),
+    // intake_cmd(12.0),
+    // drive_sys.DriveForwardCmd(3.0, vex::fwd, 0.15)->withTimeout(4.0),
+    // new DelayCommand(500),
+    // intake_cmd(0),
     // new DebugCommand(),
   };
     cc.run();
