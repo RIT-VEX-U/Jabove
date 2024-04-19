@@ -533,10 +533,11 @@ bool TankDrive::turn_to_heading(double heading_deg, Feedback &feedback, double m
   // whether to turn left or right.
   double delta_heading = OdometryBase::smallest_angle(odometry->get_position().rot, heading_deg);
   feedback.update(-delta_heading);
+  printf("dheading: %f, rot = %.f, output: %.2f\n", delta_heading, odometry->get_position().rot, feedback.get());
 
   fflush(stdout);
 
-  drive_tank(-feedback.get(), feedback.get());
+  drive_tank(feedback.get(), -feedback.get());
 
   // When the robot has reached it's angle, return true.
   if (feedback.is_on_target()) {
@@ -647,8 +648,8 @@ bool TankDrive::pure_pursuit(
   double left = clamp(feedback.get(), -max_speed, max_speed);
   double right = clamp(feedback.get(), -max_speed, max_speed);
 
-  left += correction;
-  right -= correction;
+  left -= correction;
+  right += correction;
 
   drive_tank(left, right);
 

@@ -5,7 +5,6 @@
 #include "tuning.h"
 #include "vex.h"
 
-#define SOFTTEST
 #define LINK_BUTTON_AND_DIGOUT(but, sol) but.pressed([]() { sol.set(!sol.value()); })
 
 std::atomic<bool> drive(true);
@@ -27,19 +26,41 @@ const vex::controller::button &climb_wing_button = con.ButtonRight;
  * Main entrypoint for the driver control period
  */
 void opcontrol() {
+  //   autonomous();
   // ================ INIT ================
   while (imu.isCalibrating()) {
     vexDelay(1);
   }
-#ifdef SOFTTEST
+
   con.ButtonUp.pressed([]() { drive = !drive; });
 
   con.ButtonLeft.pressed([]() { odom.set_position({.x = 0, .y = 0, .rot = 0}); });
-
+  con.ButtonRight.pressed([]() {
+    auto pose = odom.get_position();
+    printf("(%.2f, %.2f) - %.2f\n", pose.x, pose.y, pose.rot);
+  });
   con.ButtonA.pressed([]() {
     CommandController cc{
-      drive_sys.DriveForwardCmd(drive_pid, 48.0, vex::fwd),
-      //   drive_sys.TurnDegreesCmd(90),
+      odom.SetPositionCmd({.x = 0, .y = 0, .rot = 90}),
+      new RepeatUntil(
+        {
+          drive_sys.DriveToPointCmd({0, 45}),
+          drive_sys.TurnToHeadingCmd(0),
+          drive_sys.DriveToPointCmd({10, 45}),
+          drive_sys.TurnToHeadingCmd(-90),
+          drive_sys.DriveToPointCmd({10, 0}),
+          drive_sys.TurnToHeadingCmd(180),
+          drive_sys.DriveToPointCmd({0, 0}),
+          drive_sys.TurnToHeadingCmd(90),
+        },
+        new TimesTestedCondition(5)
+      ),
+      drive_sys.TurnToHeadingCmd(0, 1.0),
+      // drive_sys.DriveToPointCmd({0, 40}, vex::fwd, 0.65)->withTimeout(2.0),
+      //   drive_sys.DriveToPointCmd({40, 35}, vex::fwd, 0.75)->withTimeout(2.0),
+
+      // pick up second
+
       // new IntakeToHold()
     };
     cc.add_cancel_func([]() { return con.ButtonX.pressing(); });
@@ -47,7 +68,6 @@ void opcontrol() {
     cc.run();
     drive = true;
   });
-#endif
 
   LINK_BUTTON_AND_DIGOUT(left_wing_buttom, left_wing_sol);
   LINK_BUTTON_AND_DIGOUT(right_wing_button, right_wing_sol);
