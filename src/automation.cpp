@@ -18,7 +18,9 @@ bool ball_in_intake() {
 bool IntakeToHold::run() {
     intake_motors.spin(REV, intake_volts, vex::volt);
 
-    while (!ball_in_intake()) { vexDelay(100); }
+    while (!ball_in_intake()) {
+      drive_sys.drive_tank(0.3, 0.3);
+    }
 
     intake_motors.stop(vex::brakeType::hold);
     

@@ -12,7 +12,7 @@ vex::controller con;
 vex::inertial imu(vex::PORT19, vex::turnType::right);
 
 // Analog sensors
-const double intake_sensor_dist_mm = 50;
+const double intake_sensor_dist_mm = 52;
 vex::distance intake_sensor(vex::PORT21);
 
 // ================ OUTPUTS ================

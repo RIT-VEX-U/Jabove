@@ -533,7 +533,7 @@ bool TankDrive::turn_to_heading(double heading_deg, Feedback &feedback, double m
   // whether to turn left or right.
   double delta_heading = OdometryBase::smallest_angle(odometry->get_position().rot, heading_deg);
   feedback.update(-delta_heading);
-  printf("dheading: %f, rot = %.f, output: %.2f\n", delta_heading, odometry->get_position().rot, feedback.get());
+  // printf("dheading: %f, rot = %.f, output: %.2f\n", delta_heading, odometry->get_position().rot, feedback.get());
 
   fflush(stdout);
 
