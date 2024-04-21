@@ -74,13 +74,14 @@ PID::pid_config_t drive_correction_pid{
 };
 
 PID::pid_config_t turn_pid_cfg{
-  .p = 0.017,
+  .p = 0.01,
   .i = 0.0,
-  .d = 0.00105, // 00075,
+  .d = 0.0004, // 00075,
   .deadband = 1.5,
-  .on_target_time = 0.25,
+  .on_target_time = 0.125,
   .error_method = PID::ERROR_TYPE::LINEAR,
 };
+
 FeedForward::ff_config_t turn_ff{
   .kS = 0.06,
   .kG = 0,

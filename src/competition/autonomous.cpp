@@ -83,11 +83,14 @@ void just_auto() {
     // pick up field triball
     drive_sys.TurnToPointCmd(47.2, 54.7, vex::fwd, 0.65)->withTimeout(2.0),
     // intake_cmd(12.0),
-    new IntakeToHold(),
+    IntakeToHold(3.0),
+    // new DebugCommand(),
+    drive_sys.DriveToPointCmd({48.0, 52.0}, vex::fwd, 0.5)->withTimeout(2.0),
 
-    new DelayCommand(300),
+    new DelayCommand(1000),
 
     // drive_sys.DriveToPointCmd({47.63, 54.5}, vex::fwd, 0.5)->withTimeout(2.0),
+    // drive_sys.TurnToPointCmd(37.7, 34.5, vex::reverse, 0.65)->withTimeout(2.0),
     drive_sys.DriveToPointCmd({37.7, 34.5}, vex::reverse, 0.75)->withTimeout(2.0),
     // stop_intake(),
     drive_sys.TurnToPointCmd(37.5, 20.0, vex::fwd, 0.65)->withTimeout(2.0),

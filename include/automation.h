@@ -4,10 +4,7 @@
 #include <tuple>
 
 // ================ Autonomous Abstractions ================
-class IntakeToHold : public AutoCommand {
-public:
-  bool run() override;
-};
+AutoCommand *IntakeToHold(double timeout);
 
 void intake(double volts);
 void intake();
