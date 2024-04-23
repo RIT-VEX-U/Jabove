@@ -41,8 +41,19 @@ void opcontrol() {
   });
   con.ButtonA.pressed([]() {
     CommandController cc{
-      odom.SetPositionCmd({.x = 0, .y = 0, .rot = 90}), drive_sys.DriveForwardCmd(2.0),
-
+      odom.SetPositionCmd({.x = 0, .y = 0, .rot = 90}),
+      drive_sys.PurePursuitCmd(
+        PurePursuit::Path(
+          {
+            {0, 0},
+            {12, 20},
+            {0, 30},
+            {-12, 40},
+          },
+          6.0
+        ),
+        vex::fwd, 0.25
+      ),
       //   new RepeatUntil(
       // {
       //   drive_sys.DriveToPointCmd({0, 45}),
@@ -56,7 +67,7 @@ void opcontrol() {
       // },
       // new TimesTestedCondition(5)
       //   ),
-      drive_sys.TurnToHeadingCmd(0, 1.0),
+      //   drive_sys.TurnToHeadingCmd(0, 1.0),
       // drive_sys.DriveToPointCmd({0, 40}, vex::fwd, 0.65)->withTimeout(2.0),
       //   drive_sys.DriveToPointCmd({40, 35}, vex::fwd, 0.75)->withTimeout(2.0),
 

@@ -648,8 +648,8 @@ bool TankDrive::pure_pursuit(
   double left = clamp(feedback.get(), -max_speed, max_speed);
   double right = clamp(feedback.get(), -max_speed, max_speed);
 
-  left -= correction;
-  right += correction;
+  left += correction;
+  right -= correction;
 
   drive_tank(left, right);
 

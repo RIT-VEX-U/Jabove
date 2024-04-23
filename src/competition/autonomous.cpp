@@ -81,13 +81,13 @@ void just_auto() {
     drive_sys.DriveToPointCmd({40, 35}, vex::fwd, 0.75)->withTimeout(2.0),
     
     // pick up field triball
-    drive_sys.TurnToPointCmd(47.2, 54.7, vex::fwd, 0.65)->withTimeout(2.0),
-    // intake_cmd(12.0),
-    IntakeToHold(3.0),
+    drive_sys.TurnToPointCmd(49.2, 56.7, vex::fwd, 0.65)->withTimeout(2.0),
+    intake_cmd(12.0),
+    // IntakeToHold(4.0),
     // new DebugCommand(),
-    drive_sys.DriveToPointCmd({48.0, 52.0}, vex::fwd, 0.5)->withTimeout(2.0),
+    drive_sys.DriveToPointCmd({50.0, 54.0}, vex::fwd, 0.65)->withTimeout(3.0),
 
-    new DelayCommand(1000),
+    new DelayCommand(600),
 
     // drive_sys.DriveToPointCmd({47.63, 54.5}, vex::fwd, 0.5)->withTimeout(2.0),
     // drive_sys.TurnToPointCmd(37.7, 34.5, vex::reverse, 0.65)->withTimeout(2.0),
@@ -97,7 +97,7 @@ void just_auto() {
     drive_sys.DriveToPointCmd({37.5, 20.0}, vex::fwd, 0.75)->withTimeout(2.0),
 
     // Drop triball off
-    drive_sys.TurnToHeadingCmd(340, 0.65)->withTimeout(2.0),
+    drive_sys.TurnToHeadingCmd(340, 0.65)->withTimeout(1.5),
     outtake_cmd(),
     new DelayCommand(450),
     stop_intake(),
@@ -105,7 +105,7 @@ void just_auto() {
 
     // get close to wall
     drive_sys.TurnToHeadingCmd(240, 0.65)->withTimeout(2.0), 
-    drive_sys.DriveToPointCmd({33.33, 12.40}, vex::fwd, 0.3)->withTimeout(4.0),
+    drive_sys.DriveToPointCmd({33.33, 12.40}, vex::fwd, 0.3)->withTimeout(2.0)->withCancelCondition(drive_sys.DriveStalledCondition(0.05)),
 
     new DelayCommand(450),
 
@@ -118,7 +118,7 @@ void just_auto() {
         return true;
     }),
 
-    drive_sys.DriveToPointCmd({22.0, 17.0}, vex::reverse, 0.10)->withTimeout(6.0), // (22.7, 16) - 340
+    drive_sys.DriveToPointCmd({21.0, 18.0}, vex::reverse, 0.25)->withTimeout(3.0), // (22.7, 16) - 340
 
     new FunctionCommand([]() {
         auto pos = odom.get_position();
@@ -139,18 +139,37 @@ void just_auto() {
         new DelayCommand(800),
     }, (new IfTimePassed(35))->Or(new TimesTestedCondition(2))),
 
-    // toggle_wing_r(),
 
+    new Async(new InOrder{
+        new WaitUntilCondition(new FunctionCondition([](){
+            return odom.get_position().x > 105;
+        })),
+        toggle_wing_r(),
+    }),
+    // pushing
+    toggle_wing_l(),
+    drive_sys.PurePursuitCmd(PurePursuit::Path({
+        {21.63,	-3 + 16.3},
+        {33.04,	-2 + 9.91},
+        {44.75,	-1 + 6.5},
+        {76,	5.3},
+        {110,	-1 + 6.4},
+        {120,	 14.25},
+        {128,	 27.75},
+        // {121.5,	-1 + 31.5},
+    }, 8.0), vex::fwd, 0.5),
+
+    toggle_wing_l(),
+    drive_sys.TurnDegreesCmd(90)->withTimeout(0.1),
+    drive_sys.TurnToHeadingCmd(-90)->withTimeout(1.0),
     // set up to push
     // new DebugCommand(),
 
-    // pushing
-    toggle_wing_l(),
 
-    outtake_cmd(),
+    // outtake_cmd(),
 
     // push to this point
-    drive_sys.DriveToPointCmd({112, 5}, vex::fwd, 0.5)->withTimeout(4.0),
+    // drive_sys.DriveToPointCmd({112, 5}, vex::fwd, 0.5)->withTimeout(4.0),
 
     // go to pushing point
     drive_sys.TurnToPointCmd(122.5,16.52,vex::fwd, 0.5)->withTimeout(1.0),
@@ -164,14 +183,17 @@ void just_auto() {
     // new DebugCommand(),
 
     // setup for push (TurnToPoint not working)
-    drive_sys.TurnToHeadingCmd(251, 0.6),
+    // drive_sys.TurnToHeadingCmd(251, 0.6)->withTimeout(2.0),
     // drive_sys.TurnToPointCmd(120.85, 8.47, vex::reverse, 0.5),
-    // drive_sys.TurnToPointCmd(132.5,36.2, vex::reverse, 0.5)->withTimeout(3.0),
+    // drive_sys.TurnToPointCmd(122.5,36.2, vex::reverse, 0.5)->withTimeout(3.0),
+    // drive_sys.DriveToPointCmd({122.5, 36.52},vex::reverse, 0.5)->withTimeout(3.0),
 
     // push once
+    new DebugCommand(),
     drive_sys.DriveForwardCmd(27, vex::reverse, 1.0)->withTimeout(1.5),
     drive_sys.DriveForwardCmd(29, vex::fwd, 1.0)->withTimeout(1.5),
-
+    drive_sys.TurnToHeadingCmd(-120),
+    // drive_sys.
     //push again
     drive_sys.DriveForwardCmd(27, vex::reverse, 1.0)->withTimeout(1.5),
     drive_sys.DriveForwardCmd(29, vex::fwd, 1.0)->withTimeout(1.5),
@@ -183,12 +205,14 @@ void just_auto() {
     drive_sys.TurnToPointCmd(68.4, 4.86, vex::forward, 0.5)->withTimeout(2.0),
     drive_sys.DriveToPointCmd({68.4, 4.86}, vex::forward, 0.6)->withTimeout(2.0),
 
+    // 123, 13.6
+    // 134.8, 35.8
+    // 127.9, 20.5
+
     stop_intake(),
 
     drive_sys.TurnToHeadingCmd(90, 0.5)->withTimeout(2.0),
-    drive_sys.DriveForwardCmd(4, vex::forward, 0.1)->withCancelCondition(drive_sys.DriveStalledCondition(0.2)),
-
-    new DebugCommand(),
+    drive_sys.DriveForwardCmd(4, vex::forward, 0.1)->withCancelCondition(drive_sys.DriveStalledCondition(0.2))->withTimeout(5.0),
 
     // drive_sys.TurnToHeadingCmd(180, 0.5)->withTimeout(2.0),
     // drive_sys.DriveToPointCmd({29.26, 4.86}, vex::forward, 0.6)->withTimeout(2.0),

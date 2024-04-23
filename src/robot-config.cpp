@@ -66,9 +66,9 @@ PID::pid_config_t drive_pid_cfg{
 PID drive_pid{drive_pid_cfg};
 
 PID::pid_config_t drive_correction_pid{
-  .p = 0.00115,
+  .p = 0.01515,
   .i = 0.0,
-  .d = 0.0,
+  .d = 0.0015,
   .deadband = 0.0,
   .error_method = PID::ERROR_TYPE::LINEAR,
 };
