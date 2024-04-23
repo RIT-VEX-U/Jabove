@@ -155,12 +155,23 @@ void just_auto() {
         {76,	5.3},
         {110,	 6.4},
         {120,	 14.25},
-        {128,	 27.75},
+        {132,	 27.75},
         // {121.5,	-1 + 31.5},
     }, 8.0), vex::fwd, 0.5)->withTimeout(5.0)->withCancelCondition(drive_sys.DriveStalledCondition(0.15)),
 
     toggle_wing_l(),
+
+    // make sure wings are in
+    new FunctionCommand([]() {
+      left_wing_sol.set(false);
+      right_wing_sol.set(false);
+      return true;
+    }),
+
     drive_sys.TurnDegreesCmd(90)->withTimeout(0.2),
+
+    new DelayCommand(300),
+
     drive_sys.TurnToHeadingCmd(-90)->withTimeout(1.0),
     // set up to push
     // new DebugCommand(),
@@ -189,14 +200,14 @@ void just_auto() {
     // drive_sys.DriveToPointCmd({122.5, 36.52},vex::reverse, 0.5)->withTimeout(3.0),
 
     // push once
-    new DebugCommand(),
-    drive_sys.DriveForwardCmd(27, vex::reverse, 1.0)->withTimeout(1.5),
-    drive_sys.DriveForwardCmd(29, vex::fwd, 1.0)->withTimeout(1.5),
-    drive_sys.TurnToHeadingCmd(-120),
+    // new DebugCommand(),
+    drive_sys.DriveForwardCmd(18, vex::reverse, 1.0)->withTimeout(1.5),
+    drive_sys.DriveForwardCmd(22, vex::fwd, 1.0)->withTimeout(1.5),
+    drive_sys.TurnToHeadingCmd(-110),
     // drive_sys.
     //push again
-    drive_sys.DriveForwardCmd(27, vex::reverse, 1.0)->withTimeout(1.5),
-    drive_sys.DriveForwardCmd(29, vex::fwd, 1.0)->withTimeout(1.5),
+    drive_sys.DriveForwardCmd(20, vex::reverse, 1.0)->withTimeout(1.5),
+    drive_sys.DriveForwardCmd(24, vex::fwd, 1.0)->withTimeout(1.5),
 
     new DelayCommand(300),
 
@@ -213,6 +224,8 @@ void just_auto() {
 
     drive_sys.TurnToHeadingCmd(90, 0.5)->withTimeout(2.0),
     drive_sys.DriveForwardCmd(4, vex::forward, 0.1)->withCancelCondition(drive_sys.DriveStalledCondition(0.2))->withTimeout(5.0),
+
+    // new DebugCommand(),
 
     // drive_sys.TurnToHeadingCmd(180, 0.5)->withTimeout(2.0),
     // drive_sys.DriveToPointCmd({29.26, 4.86}, vex::forward, 0.6)->withTimeout(2.0),
