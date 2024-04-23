@@ -153,14 +153,14 @@ void just_auto() {
         {33.04,	-2 + 9.91},
         {44.75,	-1 + 6.5},
         {76,	5.3},
-        {110,	-1 + 6.4},
+        {110,	 6.4},
         {120,	 14.25},
         {128,	 27.75},
         // {121.5,	-1 + 31.5},
-    }, 8.0), vex::fwd, 0.5),
+    }, 8.0), vex::fwd, 0.5)->withTimeout(5.0)->withCancelCondition(drive_sys.DriveStalledCondition(0.15)),
 
     toggle_wing_l(),
-    drive_sys.TurnDegreesCmd(90)->withTimeout(0.1),
+    drive_sys.TurnDegreesCmd(90)->withTimeout(0.2),
     drive_sys.TurnToHeadingCmd(-90)->withTimeout(1.0),
     // set up to push
     // new DebugCommand(),
@@ -172,10 +172,10 @@ void just_auto() {
     // drive_sys.DriveToPointCmd({112, 5}, vex::fwd, 0.5)->withTimeout(4.0),
 
     // go to pushing point
-    drive_sys.TurnToPointCmd(122.5,16.52,vex::fwd, 0.5)->withTimeout(1.0),
-    drive_sys.DriveToPointCmd({122.5, 16.52},vex::fwd, 0.5)->withTimeout(3.0),
-
-    toggle_wing_l(),
+    // drive_sys.TurnToPointCmd(122.5,16.52,vex::fwd, 0.5)->withTimeout(1.0),
+    // drive_sys.DriveToPointCmd({122.5, 16.52},vex::fwd, 0.5)->withTimeout(3.0),
+// 
+    // toggle_wing_l(),
 
     // flip around
     // drive_sys.TurnDegreesCmd(-180)->withTimeout(0.35), // start spinning the right way
