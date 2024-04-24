@@ -6,13 +6,14 @@
  * Main entrypoint for the autonomous period
  */
 void just_auto();
+void skills();
 
 void autonomous() {
   while (imu.isCalibrating()) {
     vexDelay(1);
   }
 
-  just_auto();
+  skills();
 }
 
 AutoCommand *intake_cmd(double amt = 8.0) {
@@ -204,4 +205,88 @@ void just_auto() {
   };
     cc.run();
   // clang-format on
+}
+
+void skills() {
+  // clang-format on
+  // printf("hi");
+  CommandController cc{
+    odom.SetPositionCmd({.x = 22.24, .y = 16.25, .rot = 334}),
+
+    // new DebugCommand(),
+
+    new RepeatUntil({
+      toggle_wing_r(),
+      new DelayCommand(300),
+      toggle_wing_r(),
+      new DelayCommand(600),
+    }, (new IfTimePassed(35))->Or(new TimesTestedCondition(10))),
+
+    // new DebugCommand(),
+
+    outtake_cmd(),
+
+    new Async(new InOrder{
+        new WaitUntilCondition(new FunctionCondition([](){
+            return odom.get_position().x > 105;
+        })),
+        toggle_wing_r(),
+    }),
+    // pushing
+    toggle_wing_l(),
+    drive_sys.PurePursuitCmd(PurePursuit::Path({
+        {21.63,	13.3},
+        {33.04,	7.91},
+        {44.75,	5.3},
+        {76,	4.5},
+        {90, 4.6},
+        {110,	 6.4},
+        {120,	 14.25},
+        {132,	 27.75},
+        // {121.5,	-1 + 31.5},
+    }, 8.0), vex::fwd, 0.5)->withTimeout(5.0)->withCancelCondition(drive_sys.DriveStalledCondition(0.15)),
+
+    toggle_wing_l(),
+
+    // make sure wings are in
+    new FunctionCommand([]() {
+      left_wing_sol.set(false);
+      right_wing_sol.set(false);
+      return true;
+    }),
+
+    drive_sys.TurnDegreesCmd(90)->withTimeout(0.2),
+
+    new DelayCommand(300),
+
+    drive_sys.TurnToHeadingCmd(-90)->withTimeout(1.0),
+    outtake_cmd(),
+
+
+    // push once
+    // new DebugCommand(),
+    drive_sys.DriveForwardCmd(12, vex::reverse, 1.0)->withTimeout(1.5),
+
+    // new DebugCommand(),
+
+    drive_sys.DriveForwardCmd(14, vex::fwd, 1.0)->withTimeout(1.5),
+    // drive_sys.DriveToPointCmd({128.4, 28.26}, vex::forward, 0.6)->withTimeout(2.0),
+    drive_sys.TurnToHeadingCmd(-110)->withTimeout(2.0),
+
+    //push again
+    drive_sys.DriveForwardCmd(14, vex::reverse, 1.0)->withTimeout(1.5),
+
+    drive_sys.TurnToHeadingCmd(-90)->withTimeout(2.0),
+
+    drive_sys.DriveForwardCmd(16, vex::fwd, 1.0)->withTimeout(1.5),
+    // drive_sys.DriveToPointCmd({118.4, 7.26}, vex::forward, 0.6)->withTimeout(2.0),
+
+    new DelayCommand(300),
+
+    new DebugCommand(),
+
+
+  };
+
+  cc.run();
 }
