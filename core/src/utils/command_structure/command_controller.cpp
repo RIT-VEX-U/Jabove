@@ -110,7 +110,7 @@ void CommandController::run() {
       break;
     }
 
-    printf("Finished Command %d. Timed out: %s\n", command_count, command_timed_out ? "true" : "false");
+    printf("Finished Command %d. Timed out: %s\n, Time: %f", command_count, command_timed_out ? "true" : "false", tmr.value());
     fflush(stdout);
     command_count++;
   }
