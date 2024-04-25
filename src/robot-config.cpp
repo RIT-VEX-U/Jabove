@@ -140,7 +140,7 @@ void robot_init() {
   imu.startCalibration();
 
   // set video
-  set_video("funkylow.mpeg");
+  set_video("pedro.mpeg");
   screen::start_screen(
     Brain.Screen,
     {
@@ -149,6 +149,6 @@ void robot_init() {
       new screen::OdometryPage(odom, 12.1, 14.95, true),
       new screen::StatsPage(motor_names),
     },
-    1
+    0
   );
 }

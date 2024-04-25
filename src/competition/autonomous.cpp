@@ -207,24 +207,43 @@ void just_auto() {
   // clang-format on
 }
 
+AutoCommand *setBrakeHold() {
+  return new FunctionCommand([]() {
+    left_motors.setStopping(vex::brakeType::hold);
+    right_motors.setStopping(vex::brakeType::hold);
+    return true;
+  });
+}
+
+AutoCommand *setBrakeCoast() {
+  return new FunctionCommand([]() {
+    left_motors.setStopping(vex::brakeType::coast);
+    right_motors.setStopping(vex::brakeType::coast);
+    return true;
+  });
+}
+
 void skills() {
   // clang-format on
-  // printf("hi");
+
   CommandController cc{
     odom.SetPositionCmd({.x = 22.24, .y = 16.25, .rot = 334}),
 
     // new DebugCommand(),
+    setBrakeHold(),
 
     new RepeatUntil({
       toggle_wing_r(),
-      new DelayCommand(300),
+      new DelayCommand(500),
       toggle_wing_r(),
-      new DelayCommand(600),
-    }, (new IfTimePassed(35))->Or(new TimesTestedCondition(10))),
+      new DelayCommand(1000),
+    }, (new IfTimePassed(50))->Or(new TimesTestedCondition(4))),
 
     // new DebugCommand(),
 
     outtake_cmd(),
+
+    setBrakeCoast(),
 
     new Async(new InOrder{
         new WaitUntilCondition(new FunctionCondition([](){
@@ -235,16 +254,20 @@ void skills() {
     // pushing
     toggle_wing_l(),
     drive_sys.PurePursuitCmd(PurePursuit::Path({
-        {21.63,	13.3},
-        {33.04,	7.91},
+        {21.63,	10.3},
+        {33.04,	6.4},
         {44.75,	5.3},
-        {76,	4.5},
-        {90, 4.6},
-        {110,	 6.4},
-        {120,	 14.25},
-        {132,	 27.75},
+        {76,	4.2},
+        {90, 4.2},
+        {110,	 5.3},
+        {124,	 11.25},
+        {134,	 24.75},
         // {121.5,	-1 + 31.5},
     }, 8.0), vex::fwd, 0.5)->withTimeout(5.0)->withCancelCondition(drive_sys.DriveStalledCondition(0.15)),
+
+    // outtake_cmd(0),
+
+    // new DebugCommand(),
 
     toggle_wing_l(),
 
@@ -265,23 +288,25 @@ void skills() {
 
     // push once
     // new DebugCommand(),
-    drive_sys.DriveForwardCmd(12, vex::reverse, 1.0)->withTimeout(1.5),
+    drive_sys.DriveForwardCmd(16, vex::reverse, 1.0)->withTimeout(1.5),
 
-    // new DebugCommand(),
+    drive_sys.DriveForwardCmd(18, vex::fwd, 1.0)->withTimeout(1.5),
 
-    drive_sys.DriveForwardCmd(14, vex::fwd, 1.0)->withTimeout(1.5),
+    new DebugCommand(),
     // drive_sys.DriveToPointCmd({128.4, 28.26}, vex::forward, 0.6)->withTimeout(2.0),
     drive_sys.TurnToHeadingCmd(-110)->withTimeout(2.0),
 
     //push again
-    drive_sys.DriveForwardCmd(14, vex::reverse, 1.0)->withTimeout(1.5),
+    drive_sys.DriveForwardCmd(18, vex::reverse, 1.0)->withTimeout(1.5),
 
     drive_sys.TurnToHeadingCmd(-90)->withTimeout(2.0),
 
-    drive_sys.DriveForwardCmd(16, vex::fwd, 1.0)->withTimeout(1.5),
+    drive_sys.DriveForwardCmd(12, vex::fwd, 1.0)->withTimeout(1.5),
     // drive_sys.DriveToPointCmd({118.4, 7.26}, vex::forward, 0.6)->withTimeout(2.0),
 
     new DelayCommand(300),
+
+    outtake_cmd(0),
 
     new DebugCommand(),
 
