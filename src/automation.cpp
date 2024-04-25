@@ -13,7 +13,7 @@ const double intake_volts = 10.0;
 
 bool ball_in_intake() { return intake_sensor.objectDistance(vex::distanceUnits::mm) < intake_sensor_dist_mm; }
 
-class WatchInakeCmd : public AutoCommand {
+class WatchIntakeCmd : public AutoCommand {
   bool run() override {
     intake(12.0);
     if (ball_in_intake()) {
@@ -26,7 +26,7 @@ class WatchInakeCmd : public AutoCommand {
   void on_timeout() override { intake(0.0); }
 };
 
-AutoCommand *IntakeToHold(double timeout) { return new Async((new WatchInakeCmd())->withTimeout(timeout)); }
+AutoCommand *IntakeToHold(double timeout) { return new Async((new WatchIntakeCmd())->withTimeout(timeout)); }
 
 void intake(double volts) { intake_motors.spin(REV, volts, vex::volt); };
 void intake() { intake_motors.spin(REV, intake_volts, vex::volt); };
