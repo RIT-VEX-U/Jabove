@@ -234,15 +234,15 @@ void skills() {
     // new DebugCommand(),
     setBrakeHold(),
 
-    new RepeatUntil(
-      {
-        toggle_wing_r(),
-        new DelayCommand(400),
-        toggle_wing_r(),
-        new DelayCommand(800),
-      },
-      (new IfTimePassed(35))->Or(new TimesTestedCondition(22))
-    ),
+    // new RepeatUntil(
+    //   {
+    // toggle_wing_r(),
+    // new DelayCommand(400),
+    // toggle_wing_r(),
+    // new DelayCommand(800),
+    //   },
+    //   (new IfTimePassed(35))->Or(new TimesTestedCondition(22))
+    // ),
 
     // new DebugCommand(),
 
@@ -291,7 +291,7 @@ void skills() {
 
     // turn around
     drive_sys.TurnDegreesCmd(90)->withTimeout(0.2),
-    // new DelayCommand(300),
+    new DelayCommand(300),
     drive_sys.TurnToHeadingCmd(-90)->withTimeout(1.0),
 
     outtake_cmd(),
@@ -300,7 +300,7 @@ void skills() {
 
     // push once
     // ODO X: 132.74, Y: 36.19, R:276.50
-    drive_sys.DriveToPointCmd({132.74, 40.19}, vex::reverse, 1.0)->withTimeout(1.5),
+    drive_sys.DriveToPointCmd({132.74, 42.19}, vex::reverse, 1.0)->withTimeout(1.5),
     // drive_sys.DriveForwardCmd(18, vex::reverse, 1.0)->withTimeout(1.5),
 
     // ODO X: 133.41, Y: 24.83, R:272.45
@@ -310,7 +310,7 @@ void skills() {
     // push again (rework in fruture)
     // new DebugCommand(),
     // ODO X: 133.42, Y: 38.44, R:266.89
-    drive_sys.DriveToPointCmd({133.42, 40.44}, vex::reverse, 1.0)->withTimeout(1.5),
+    drive_sys.DriveToPointCmd({133.42, 42.44}, vex::reverse, 1.0)->withTimeout(1.5),
     // drive_sys.DriveForwardCmd(16, vex::reverse, 1.0)->withTimeout(1.5),
 
     // drive_sys.DriveForwardCmd(17, vex::fwd, 1.0)->withTimeout(1.5),
@@ -339,7 +339,6 @@ void skills() {
             {130.46, 26.56},
             {125.07, 18.81},
             {119.47, 13.10},
-
           },
           3.0
         ),
@@ -351,6 +350,7 @@ void skills() {
     outtake_cmd(0),
 
     // new DebugCommand(),
+    drive_sys.TurnToPointCmd(92.51, 49.70, vex::fwd, 0.5)->withTimeout(1.0),
 
     toggle_wing_l(),
     toggle_wing_r(),
@@ -359,7 +359,16 @@ void skills() {
       .PurePursuitCmd(
         PurePursuit::Path(
           {
-            {107.51, 30.70}, {96.09, 49.84}, {95.97, 64.14},
+            {119.78, 13.40}, {108.93, 32.0}, {100.78, 44.07}, {105.38, 54.8}, {118.78, 58.52},
+            // {92.47, 13.10},
+            // {91.09, 49.84},
+            // {95.97, 64.14},
+            // {89.84, 53.34},
+            // {89.84, 61.0},
+            //
+            // front push
+            // {108.14, 72.59},
+            // {119.14, 72.59},
             // {125.53, 14.81},
             // {119.02, 11.23},
             // {115.91, 15.56},
@@ -370,20 +379,11 @@ void skills() {
           },
           2.0
         ),
-        vex::fwd, 0.35
+        vex::fwd, 0.4
       )
       ->withTimeout(5.0)
-      ->withCancelCondition(drive_sys.DriveStalledCondition(0.5)),
+      ->withCancelCondition(drive_sys.DriveStalledCondition(0.25)),
 
-    drive_sys.TurnToHeadingCmd(0, 0.5)->withTimeout(2.0),
-
-    // outtake_cmd(0),
-
-    // front push
-
-    drive_sys.DriveForwardCmd(30, vex::fwd, 1.0)
-      ->withTimeout(2.0)
-      ->withCancelCondition(drive_sys.DriveStalledCondition(0.15)),
     toggle_wing_l(),
     // backup
     drive_sys.DriveToPointCmd({101.86, 77.38}, vex::reverse, 0.4)->withTimeout(3.0),
