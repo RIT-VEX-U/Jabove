@@ -20,7 +20,8 @@ const vex::controller::button &right_wing_button = con.ButtonB;
 const vex::controller::button &both_wing_button = con.ButtonL1;
 const vex::controller::button &brake_mode_button = con.ButtonL2;
 
-const vex::controller::button &climb_wing_button = con.ButtonRight;
+const vex::controller::button &rclimb_wing_button = con.ButtonRight;
+const vex::controller::button &lclimb_wing_button = con.ButtonLeft;
 
 /**
  * Main entrypoint for the driver control period
@@ -83,7 +84,10 @@ void opcontrol() {
 
   LINK_BUTTON_AND_DIGOUT(left_wing_buttom, left_wing_sol);
   LINK_BUTTON_AND_DIGOUT(right_wing_button, right_wing_sol);
-  LINK_BUTTON_AND_DIGOUT(climb_wing_button, climb_wing_sol);
+
+  LINK_BUTTON_AND_DIGOUT(rclimb_wing_button, rclimb_wing_sol);
+  LINK_BUTTON_AND_DIGOUT(lclimb_wing_button, lclimb_wing_sol);
+
   LINK_BUTTON_AND_DIGOUT(both_wing_button, left_wing_sol);
   LINK_BUTTON_AND_DIGOUT(both_wing_button, right_wing_sol);
   LINK_BUTTON_AND_DIGOUT(con.ButtonY, vision_light);

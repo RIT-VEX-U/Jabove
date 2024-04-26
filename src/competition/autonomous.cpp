@@ -234,12 +234,15 @@ void skills() {
     // new DebugCommand(),
     setBrakeHold(),
 
-    new RepeatUntil({
-      toggle_wing_r(),
-      new DelayCommand(400),
-      toggle_wing_r(),
-      new DelayCommand(800),
-    }, (new IfTimePassed(35))->Or(new TimesTestedCondition(22))),
+    new RepeatUntil(
+      {
+        toggle_wing_r(),
+        new DelayCommand(400),
+        toggle_wing_r(),
+        new DelayCommand(800),
+      },
+      (new IfTimePassed(35))->Or(new TimesTestedCondition(22))
+    ),
 
     // new DebugCommand(),
 
@@ -259,17 +262,19 @@ void skills() {
     // }),
     // pushing
     toggle_wing_l(),
-    drive_sys.PurePursuitCmd(PurePursuit::Path({
-        {21.63,	10.3},
-        {33.04,	6.4},
-        {44.75,	5.2},
-        {76,	4.2},
-        {90, 4.2},
-        {105,	 5.2},
-        {122,	 9.25},
-        {134,	 23.75},
-        // {121.5,	-1 + 31.5},
-    }, 8.0), vex::fwd, 0.5)->withTimeout(5.0)->withCancelCondition(drive_sys.DriveStalledCondition(0.15)),
+    drive_sys
+      .PurePursuitCmd(
+        PurePursuit::Path(
+          {
+            {21.63, 10.3}, {33.04, 6.4}, {44.75, 5.2}, {76, 4.2}, {90, 4.2}, {105, 5.2}, {122, 9.25}, {134, 23.75},
+            // {121.5,	-1 + 31.5},
+          },
+          8.0
+        ),
+        vex::fwd, 0.5
+      )
+      ->withTimeout(5.0)
+      ->withCancelCondition(drive_sys.DriveStalledCondition(0.15)),
 
     // outtake_cmd(0),
 
@@ -286,7 +291,7 @@ void skills() {
 
     // turn around
     drive_sys.TurnDegreesCmd(90)->withTimeout(0.2),
-    new DelayCommand(300),
+    // new DelayCommand(300),
     drive_sys.TurnToHeadingCmd(-90)->withTimeout(1.0),
 
     outtake_cmd(),
@@ -294,34 +299,53 @@ void skills() {
     // drive_sys.TurnToHeadingCmd(90),
 
     // push once
-    // new DebugCommand(),
-    drive_sys.DriveForwardCmd(18, vex::fwd, 1.0)->withTimeout(1.5),
+    // ODO X: 132.74, Y: 36.19, R:276.50
+    drive_sys.DriveToPointCmd({132.74, 40.19}, vex::reverse, 1.0)->withTimeout(1.5),
+    // drive_sys.DriveForwardCmd(18, vex::reverse, 1.0)->withTimeout(1.5),
 
-    drive_sys.DriveForwardCmd(17, vex::reverse, 1.0)->withTimeout(1.5),
+    // ODO X: 133.41, Y: 24.83, R:272.45
+    // drive_sys.DriveForwardCmd(17, vex::fwd, 1.0)->withTimeout(1.5),
+    drive_sys.DriveToPointCmd({133.42, 24.83}, vex::fwd, 0.7)->withTimeout(1.5),
 
     // push again (rework in fruture)
     // new DebugCommand(),
-    drive_sys.DriveForwardCmd(16, vex::reverse, 1.0)->withTimeout(1.5),
+    // ODO X: 133.42, Y: 38.44, R:266.89
+    drive_sys.DriveToPointCmd({133.42, 40.44}, vex::reverse, 1.0)->withTimeout(1.5),
+    // drive_sys.DriveForwardCmd(16, vex::reverse, 1.0)->withTimeout(1.5),
 
-    drive_sys.DriveForwardCmd(17, vex::fwd, 1.0)->withTimeout(1.5),
+    // drive_sys.DriveForwardCmd(17, vex::fwd, 1.0)->withTimeout(1.5),
 
     // new DebugCommand(),
     // drive_sys.DriveToPointCmd({128.4, 28.26}, vex::forward, 0.6)->withTimeout(2.0),
     // drive_sys.TurnToHeadingCmd(-110)->withTimeout(2.0),
 
-    //push again
-    // drive_sys.DriveForwardCmd(18, vex::reverse, 1.0)->withTimeout(1.5),
+    // push again
+    //  drive_sys.DriveForwardCmd(18, vex::reverse, 1.0)->withTimeout(1.5),
 
-    drive_sys.TurnToHeadingCmd(-90)->withTimeout(2.0),
+    // drive_sys.TurnToHeadingCmd(-90)->withTimeout(2.0),
 
     // drive_sys.DriveForwardCmd(14, vex::fwd, 1.0)->withTimeout(1.5),
     // drive_sys.DriveToPointCmd({118.4, 7.26}, vex::forward, 0.6)->withTimeout(2.0),
 
-    new DelayCommand(150),
+    // new DelayCommand(150),
 
-    drive_sys.TurnToPointCmd(120.32, 14.81, vex::fwd, 0.8),
-    drive_sys.DriveToPointCmd({120.32, 14.81}, vex::fwd, 0.6),
+    // drive_sys.TurnToPointCmd(120.32, 14.81, vex::fwd, 0.8),
+    // drive_sys.DriveToPointCmd({120.32, 14.81}, vex::fwd, 0.6),
 
+    drive_sys
+      .PurePursuitCmd(
+        PurePursuit::Path(
+          {
+            {130.46, 26.56},
+            {125.07, 18.81},
+            {119.47, 13.10},
+
+          },
+          3.0
+        ),
+        vex::fwd, .35
+      )
+      ->withTimeout(3.5),
     new DelayCommand(200),
 
     outtake_cmd(0),
@@ -331,35 +355,46 @@ void skills() {
     toggle_wing_l(),
     toggle_wing_r(),
 
-    drive_sys.PurePursuitCmd(PurePursuit::Path({
-      {107.51, 30.70},
-      {96.09, 49.84},
-      {95.97, 64.14},
-      // {125.53, 14.81},
-      // {119.02, 11.23},
-      // {115.91, 15.56},
-      // {111.17, 25.05},
-      // {100.62, 34.98},
-      // {91.25, 60.15},
-      // {106.37, 59.88},
-    }, 2.0), vex::fwd, 0.35)->withTimeout(5.0)->withCancelCondition(drive_sys.DriveStalledCondition(0.5)),
+    drive_sys
+      .PurePursuitCmd(
+        PurePursuit::Path(
+          {
+            {107.51, 30.70}, {96.09, 49.84}, {95.97, 64.14},
+            // {125.53, 14.81},
+            // {119.02, 11.23},
+            // {115.91, 15.56},
+            // {111.17, 25.05},
+            // {100.62, 34.98},
+            // {91.25, 60.15},
+            // {106.37, 59.88},
+          },
+          2.0
+        ),
+        vex::fwd, 0.35
+      )
+      ->withTimeout(5.0)
+      ->withCancelCondition(drive_sys.DriveStalledCondition(0.5)),
 
     drive_sys.TurnToHeadingCmd(0, 0.5)->withTimeout(2.0),
 
     // outtake_cmd(0),
 
-    // new DebugCommand(),
+    // front push
 
-    //front push
-    drive_sys.DriveForwardCmd(30, vex::fwd, 1.0)->withTimeout(2.0)->withCancelCondition(drive_sys.DriveStalledCondition(0.15)),
-
-    //backup
+    drive_sys.DriveForwardCmd(30, vex::fwd, 1.0)
+      ->withTimeout(2.0)
+      ->withCancelCondition(drive_sys.DriveStalledCondition(0.15)),
+    toggle_wing_l(),
+    // backup
     drive_sys.DriveToPointCmd({101.86, 77.38}, vex::reverse, 0.4)->withTimeout(3.0),
 
     drive_sys.TurnToHeadingCmd(0, 0.6)->withTimeout(2.0),
 
-    //second front push
-    drive_sys.DriveForwardCmd(25, vex::fwd, 1.0)->withTimeout(2.0)->withCancelCondition(drive_sys.DriveStalledCondition(0.15)),
+    // second front push
+    toggle_wing_l(),
+    drive_sys.DriveForwardCmd(25, vex::fwd, 1.0)
+      ->withTimeout(2.0)
+      ->withCancelCondition(drive_sys.DriveStalledCondition(0.15)),
 
     drive_sys.DriveForwardCmd(25, vex::reverse, 1.0),
 

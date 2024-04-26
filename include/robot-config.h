@@ -22,7 +22,8 @@ extern CustomEncoder center_enc;
 // Pneumatics
 extern vex::digital_out left_wing_sol;
 extern vex::digital_out right_wing_sol;
-extern vex::digital_out climb_wing_sol;
+extern vex::digital_out lclimb_wing_sol;
+extern vex::digital_out rclimb_wing_sol;
 extern vex::digital_out vision_light;
 
 extern vex::vision vision;
