@@ -12,8 +12,9 @@ void autonomous() {
   while (imu.isCalibrating()) {
     vexDelay(1);
   }
+  just_auto();
 
-  skills();
+  //   skills();
 }
 
 AutoCommand *intake_cmd(double amt = 8.0) {
