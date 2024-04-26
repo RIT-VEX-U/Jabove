@@ -234,15 +234,15 @@ void skills() {
     // new DebugCommand(),
     setBrakeHold(),
 
-    // new RepeatUntil(
-    //   {
-    // toggle_wing_r(),
-    // new DelayCommand(400),
-    // toggle_wing_r(),
-    // new DelayCommand(800),
-    //   },
-    //   (new IfTimePassed(35))->Or(new TimesTestedCondition(22))
-    // ),
+    new RepeatUntil(
+      {
+        toggle_wing_r(),
+        new DelayCommand(400),
+        toggle_wing_r(),
+        new DelayCommand(800),
+      },
+      (new IfTimePassed(35))->Or(new TimesTestedCondition(22))
+    ),
 
     // new DebugCommand(),
 
