@@ -27,7 +27,7 @@ const vex::controller::button &lclimb_wing_button = con.ButtonLeft;
  * Main entrypoint for the driver control period
  */
 void opcontrol() {
-  autonomous();
+
   // ================ INIT ================
   while (imu.isCalibrating()) {
     vexDelay(1);

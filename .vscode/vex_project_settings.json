@@ -4,12 +4,12 @@
 		"json": 2
 	},
 	"project": {
-		"name": "Jabove",
-		"description": "Why, isn't it another robot for the 2023-2024 season!",
-		"creationDate": "Wed, 10 Apr 2024 03:06:44 GMT",
+		"name": "JaboveSKILLS",
+		"description": "jabove skills.",
+		"creationDate": "Sun, 28 Apr 2024 05:28:51 GMT",
 		"platform": "V5",
 		"language": "cpp",
-		"slot": 8,
+		"slot": 3,
 		"sdkVersion": "V5_20240223_11_00_00",
 		"cpp": {
 			"includePath": [],
