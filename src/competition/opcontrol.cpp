@@ -23,6 +23,10 @@ const vex::controller::button &brake_mode_button = con.ButtonL2;
 const vex::controller::button &rclimb_wing_button = con.ButtonRight;
 const vex::controller::button &back_wing_button = con.ButtonY;
 
+const vex::controller::button &spin_button = con.ButtonUp;
+
+const double spin_speed = 0.45;
+
 /**
  * Main entrypoint for the driver control period
  */
@@ -54,9 +58,12 @@ void opcontrol() {
     }
   });
 
+  spin_button.pressed([]() { drive = false; });
+  spin_button.released([]() { drive = true; });
+
   // ================ PERIODIC ================
   while (true) {
-    fflush(stdout);
+    // fflush(stdout);
     if (drive) {
       if (!intake_button.pressing() && !outtake_button.pressing()) {
         intake_motors.stop(vex::brakeType::hold);
@@ -66,6 +73,9 @@ void opcontrol() {
       double turn = (double)con.Axis1.position() / 100;
 
       drive_sys.drive_arcade(straight, turn * 0.75, 1, brake_type);
+      vexDelay(10);
+    } else if (spin_button.pressing()) {
+      drive_sys.drive_tank_raw(-spin_speed, spin_speed);
       vexDelay(10);
     } else {
       vexDelay(10);

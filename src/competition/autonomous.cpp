@@ -13,7 +13,8 @@ void autonomous() {
   while (imu.isCalibrating()) {
     vexDelay(1);
   }
-  skills();
+  just_auto();
+  //   skills();
 
   //   skills();
 }
@@ -154,6 +155,7 @@ void just_auto() {
     }),
     // pushing
     toggle_wing_l(),
+    outtake_cmd(),
     drive_sys.PurePursuitCmd(PurePursuit::Path({
         {21.63,	-3 + 16.3},
         {33.04,	-2 + 9.91},
@@ -163,11 +165,10 @@ void just_auto() {
         {120,	 14.25},
         {132,	 27.75},
         // {121.5,	-1 + 31.5},
-    }, 8.0), vex::fwd, 0.3)->withTimeout(9.0)->withCancelCondition(drive_sys.DriveStalledCondition(0.15)),
+    }, 8.0), vex::fwd, 0.4)->withTimeout(7.0)->withCancelCondition(drive_sys.DriveStalledCondition(0.1)),
 
     toggle_wing_l(),
 
-    // drive_sys.DriveForwardCommand(7.5, vex::reverse, 0.4)->withTimeout(2.0)->withCancelCondition(drive_sys.DriveStalledCondition(0.15)),
 
     // make sure wings are in
     new FunctionCommand([]() {
@@ -190,15 +191,15 @@ void just_auto() {
 
     // push once
     // new DebugCommand(),
-    drive_sys.DriveForwardCmd(18, vex::reverse, 1.0)->withTimeout(1.5),
+    drive_sys.DriveForwardCmd(18, vex::reverse, 1.0)->withTimeout(1.15),
     drive_sys.DriveToPointCmd({128.4, 28.26}, vex::forward, 0.6)->withTimeout(2.0),
-    drive_sys.TurnToHeadingCmd(-110)->withTimeout(2.0),
+    drive_sys.TurnToHeadingCmd(-100)->withTimeout(2.0),
 
     //push again
-    drive_sys.DriveForwardCmd(22, vex::reverse, 1.0)->withTimeout(1.5),
+    drive_sys.DriveForwardCmd(22, vex::reverse, 1.0)->withTimeout(1.15),
 
     drive_sys.TurnToHeadingCmd(-90)->withTimeout(2.0),
-    drive_sys.DriveToPointCmd({118.4, 7.26}, vex::forward, 0.6)->withTimeout(2.0),
+    drive_sys.DriveToPointCmd({113.4, 9.26}, vex::forward, 0.6)->withTimeout(2.0),
 
     new FunctionCommand([]() {
         back_wing_sol.set(false);
