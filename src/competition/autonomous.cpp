@@ -163,9 +163,11 @@ void just_auto() {
         {120,	 14.25},
         {132,	 27.75},
         // {121.5,	-1 + 31.5},
-    }, 8.0), vex::fwd, 0.5)->withTimeout(5.0)->withCancelCondition(drive_sys.DriveStalledCondition(0.15)),
+    }, 8.0), vex::fwd, 0.3)->withTimeout(9.0)->withCancelCondition(drive_sys.DriveStalledCondition(0.15)),
 
     toggle_wing_l(),
+
+    // drive_sys.DriveForwardCommand(7.5, vex::reverse, 0.4)->withTimeout(2.0)->withCancelCondition(drive_sys.DriveStalledCondition(0.15)),
 
     // make sure wings are in
     new FunctionCommand([]() {
@@ -181,6 +183,10 @@ void just_auto() {
     drive_sys.TurnToHeadingCmd(-90)->withTimeout(1.0),
     outtake_cmd(),
 
+    new FunctionCommand([]() {
+        back_wing_sol.set(true);
+        return true;
+    }),
 
     // push once
     // new DebugCommand(),
@@ -193,6 +199,11 @@ void just_auto() {
 
     drive_sys.TurnToHeadingCmd(-90)->withTimeout(2.0),
     drive_sys.DriveToPointCmd({118.4, 7.26}, vex::forward, 0.6)->withTimeout(2.0),
+
+    new FunctionCommand([]() {
+        back_wing_sol.set(false);
+        return true;
+    }),
 
     new DelayCommand(300),
 

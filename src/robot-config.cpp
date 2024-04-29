@@ -52,7 +52,7 @@ CustomEncoder center_enc{Brain.ThreeWirePort.E, 2048};
 vex::digital_out left_wing_sol{Brain.ThreeWirePort.B};
 vex::digital_out right_wing_sol{Brain.ThreeWirePort.G};
 
-vex::digital_out lclimb_wing_sol{Brain.ThreeWirePort.C};
+vex::digital_out back_wing_sol{Brain.ThreeWirePort.C};
 vex::digital_out rclimb_wing_sol{Brain.ThreeWirePort.A};
 
 vex::digital_out vision_light{Brain.ThreeWirePort.D};

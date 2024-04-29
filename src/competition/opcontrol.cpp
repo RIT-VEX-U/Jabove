@@ -21,7 +21,7 @@ const vex::controller::button &both_wing_button = con.ButtonL1;
 const vex::controller::button &brake_mode_button = con.ButtonL2;
 
 const vex::controller::button &rclimb_wing_button = con.ButtonRight;
-const vex::controller::button &lclimb_wing_button = con.ButtonLeft;
+const vex::controller::button &back_wing_button = con.ButtonY;
 
 /**
  * Main entrypoint for the driver control period
@@ -33,60 +33,11 @@ void opcontrol() {
     vexDelay(1);
   }
 
-  con.ButtonUp.pressed([]() { drive = !drive; });
-
-  con.ButtonLeft.pressed([]() { odom.set_position({.x = 0, .y = 0, .rot = 0}); });
-  con.ButtonRight.pressed([]() {
-    auto pose = odom.get_position();
-    printf("(%.2f, %.2f) - %.2f\n", pose.x, pose.y, pose.rot);
-  });
-  con.ButtonA.pressed([]() {
-    CommandController cc{
-      odom.SetPositionCmd({.x = 0, .y = 0, .rot = 90}),
-      drive_sys.PurePursuitCmd(
-        PurePursuit::Path(
-          {
-            {0, 0},
-            {12, 20},
-            {0, 30},
-            {-12, 40},
-          },
-          6.0
-        ),
-        vex::fwd, 0.25
-      ),
-      //   new RepeatUntil(
-      // {
-      //   drive_sys.DriveToPointCmd({0, 45}),
-      //   drive_sys.TurnToHeadingCmd(0),
-      //   drive_sys.DriveToPointCmd({10, 45}),
-      //   drive_sys.TurnToHeadingCmd(-90),
-      //   drive_sys.DriveToPointCmd({10, 0}),
-      //   drive_sys.TurnToHeadingCmd(180),
-      //   drive_sys.DriveToPointCmd({0, 0}),
-      //   drive_sys.TurnToHeadingCmd(90),
-      // },
-      // new TimesTestedCondition(5)
-      //   ),
-      //   drive_sys.TurnToHeadingCmd(0, 1.0),
-      // drive_sys.DriveToPointCmd({0, 40}, vex::fwd, 0.65)->withTimeout(2.0),
-      //   drive_sys.DriveToPointCmd({40, 35}, vex::fwd, 0.75)->withTimeout(2.0),
-
-      // pick up second
-
-      // new IntakeToHold()
-    };
-    cc.add_cancel_func([]() { return con.ButtonX.pressing(); });
-    drive = false;
-    cc.run();
-    drive = true;
-  });
-
   LINK_BUTTON_AND_DIGOUT(left_wing_buttom, left_wing_sol);
   LINK_BUTTON_AND_DIGOUT(right_wing_button, right_wing_sol);
 
   LINK_BUTTON_AND_DIGOUT(rclimb_wing_button, rclimb_wing_sol);
-  LINK_BUTTON_AND_DIGOUT(lclimb_wing_button, lclimb_wing_sol);
+  LINK_BUTTON_AND_DIGOUT(back_wing_button, back_wing_sol);
 
   LINK_BUTTON_AND_DIGOUT(both_wing_button, left_wing_sol);
   LINK_BUTTON_AND_DIGOUT(both_wing_button, right_wing_sol);
